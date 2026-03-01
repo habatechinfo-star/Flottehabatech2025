@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://fleet.habatech.gn/</loc>
+    <lastmod>2024-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://fleet.habatech.gn/"/>
+  </url>
+
+  <!-- L'app est une SPA — toutes les routes pointent vers / -->
+  <!-- Les pages suivantes sont déclarées pour la découverte Google -->
+  <url>
+    <loc>https://fleet.habatech.gn/#equipment</loc>
+    <lastmod>2024-07-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fleet.habatech.gn/#workorders</loc>
+    <lastmod>2024-07-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fleet.habatech.gn/#fuel</loc>
+    <lastmod>2024-07-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://fleet.habatech.gn/#reports</loc>
+    <lastmod>2024-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

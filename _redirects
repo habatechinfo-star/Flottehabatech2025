@@ -1,0 +1,7 @@
+# Fleet Maintenance Pro — HABATECH
+# Redirect toutes les routes vers index.html (SPA)
+/*    /index.html   200
+
+# Redirect http → https
+http://fleet.habatech.gn/*  https://fleet.habatech.gn/:splat  301!
+http://www.fleet.habatech.gn/*  https://fleet.habatech.gn/:splat  301!

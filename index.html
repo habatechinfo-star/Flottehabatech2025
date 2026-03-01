@@ -1,0 +1,2669 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- ══ SEO PRIMAIRE ══ -->
+<title>Fleet Maintenance Pro — Gestion de Flotte | HABATECH</title>
+<meta name="description" content="Fleet Maintenance Pro par HABATECH : solution complète de gestion de flotte, maintenance préventive, suivi carburant, inventaire pièces et ordres de travail en Franc Guinéen (GNF).">
+<meta name="keywords" content="gestion flotte, maintenance flotte, HABATECH, Guinée, GNF, ordre de travail, inventaire pièces, carburant, véhicules, Fleet Maintenance Pro">
+<meta name="author" content="HABATECH">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0c1118">
+<link rel="canonical" href="https://fleet.habatech.gn/">
+
+<!-- ══ OPEN GRAPH / FACEBOOK ══ -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fleet.habatech.gn/">
+<meta property="og:title" content="Fleet Maintenance Pro — Gestion de Flotte | HABATECH">
+<meta property="og:description" content="Gérez votre flotte de véhicules et équipements efficacement avec Fleet Maintenance Pro. Suivi en temps réel, maintenance préventive, carburant et pièces en GNF.">
+<meta property="og:image" content="https://fleet.habatech.gn/og-image.png">
+<meta property="og:locale" content="fr_GN">
+<meta property="og:site_name" content="HABATECH Fleet">
+
+<!-- ══ TWITTER CARD ══ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@habatech_gn">
+<meta name="twitter:title" content="Fleet Maintenance Pro | HABATECH">
+<meta name="twitter:description" content="Solution de gestion de flotte professionnelle en Franc Guinéen (GNF) par HABATECH.">
+<meta name="twitter:image" content="https://fleet.habatech.gn/og-image.png">
+
+<!-- ══ PWA / MANIFESTE ══ -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fleet HABATECH">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- ══ SCHEMA.ORG JSON-LD (Google Rich Results) ══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Fleet Maintenance Pro",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web, Android, iOS",
+  "description": "Solution complète de gestion de flotte de véhicules et équipements industriels. Suivi maintenance, carburant, inventaire en Franc Guinéen (GNF).",
+  "url": "https://fleet.habatech.gn/",
+  "author": {
+    "@type": "Organization",
+    "name": "HABATECH",
+    "url": "https://habatech.gn",
+    "logo": "https://habatech.gn/logo.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "GN",
+      "addressLocality": "Conakry"
+    }
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "GNF",
+    "price": "0"
+  },
+  "inLanguage": "fr"
+}
+</script>
+
+<!-- ══ FIREBASE SDK ══ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAnalytics, logEvent }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  // ── CONFIGURATION FIREBASE (remplacer par vos clés) ──
+  const firebaseConfig = {
+    apiKey: "VOTRE_API_KEY",
+    authDomain: "fleet-habatech.firebaseapp.com",
+    projectId: "fleet-habatech",
+    storageBucket: "fleet-habatech.appspot.com",
+    messagingSenderId: "VOTRE_SENDER_ID",
+    appId: "VOTRE_APP_ID",
+    measurementId: "G-XXXXXXXXXX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const analytics = getAnalytics(app);
+
+  // Expose globally for app usage
+  window.FB = { app, auth, db, analytics,
+    signIn: (email, pass) => signInWithEmailAndPassword(auth, email, pass),
+    signOut: () => signOut(auth),
+    logEvent,
+    setDoc, getDoc, getDocs, doc, collection, onSnapshot
+  };
+
+  // ── SYNC AUTH STATE ──
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.FB.user = user;
+      logEvent(analytics, 'login', { method: 'firebase' });
+    }
+  });
+</script>
+
+<!-- ══ FONTS ══ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   FLEET MAINTENANCE PRO 2020 — v2 Complete
+   Multi-user · Fuel · Dépôts · Responsive · Customizable
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:#0c1118; --bg2:#131b27; --bg3:#1a2435; --bg4:#22304a; --bg5:#2b3d5e;
+  --border:#253349; --border2:#2f4164; --border3:#3d5280;
+  --text:#e8edf5; --text2:#94a8c4; --text3:#5a7099; --text4:#3a5070;
+  --blue:#3b82f6; --blue2:#2563eb; --blue3:#1e4fc2;
+  --green:#22d3a0; --green2:#16a97e; --red:#f43f5e; --red2:#be123c;
+  --yellow:#f59e0b; --orange:#fb923c; --purple:#a78bfa; --teal:#2dd4bf; --pink:#f472b6;
+  --sidebar-w:230px; --topbar-h:54px;
+  --r:8px; --r2:12px;
+  --shadow:0 8px 32px rgba(0,0,0,.5); --shadow2:0 2px 8px rgba(0,0,0,.3);
+  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+  --transition:all .15s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:13px;line-height:1.5}
+/* Mobile: allow body scroll */
+@media(max-width:768px){
+  body{height:auto;min-height:100dvh;overflow:auto}
+  #app{height:auto!important;min-height:100dvh}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--border3)}
+
+/* ═══ LOGIN SCREEN ═══ */
+#login-screen{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+}
+.login-card{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:40px;width:400px;max-width:calc(100vw - 24px);
+  box-shadow:var(--shadow);
+  animation:fadeUp .4s ease;
+}
+.login-logo{
+  font-size:22px;font-weight:700;color:var(--blue);letter-spacing:-0.5px;
+  margin-bottom:6px;display:flex;align-items:center;gap:8px;
+}
+.login-sub{font-size:12px;color:var(--text3);margin-bottom:28px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.login-field input,.login-field select{width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:var(--transition)}
+.login-field input:focus,.login-field select:focus{border-color:var(--blue)}
+.login-btn{width:100%;padding:11px;background:var(--blue);border:none;border-radius:var(--r);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition);margin-top:6px}
+.login-btn:hover{background:var(--blue2)}
+.login-users{margin-top:16px;border-top:1px solid var(--border);padding-top:16px}
+.login-users-title{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.login-user-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;font-size:12px;cursor:pointer;margin:3px;transition:var(--transition);
+}
+.login-user-chip:hover{border-color:var(--blue);background:rgba(59,130,246,.1);color:var(--blue)}
+.login-user-chip .av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff}
+
+/* ═══ TOPBAR ═══ */
+#topbar{
+  height:var(--topbar-h);background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:4px;
+  padding:0 12px;flex-shrink:0;z-index:100;
+  position:relative;
+}
+.logo{font-size:14px;font-weight:700;color:var(--blue);letter-spacing:-.3px;margin-right:6px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+.tb-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--r);border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;transition:var(--transition);white-space:nowrap}
+.tb-btn.primary{background:var(--blue);color:#fff}
+.tb-btn.primary:hover{background:var(--blue2)}
+.tb-btn.ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.tb-btn.ghost:hover{background:var(--bg3);color:var(--text)}
+
+#gsearch{flex:1;max-width:340px;margin:0 6px;padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:12px;font-family:var(--font);outline:none;transition:var(--transition)}
+#gsearch:focus{border-color:var(--blue)}
+#gsearch::placeholder{color:var(--text3)}
+
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.notif-btn{position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border);cursor:pointer;font-size:15px;transition:var(--transition)}
+.notif-btn:hover{background:var(--bg4)}
+.notif-badge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg2)}
+.user-chip{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:var(--transition)}
+.user-chip:hover{background:var(--bg4)}
+.avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.user-info{display:flex;flex-direction:column}
+.user-name{font-size:12px;font-weight:600;line-height:1.2}
+.user-role{font-size:10px;color:var(--text3);line-height:1.2}
+
+/* ═══ LAYOUT ═══ */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* ═══ SIDEBAR ═══ */
+#sidebar{
+  width:var(--sidebar-w);background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  overflow-y:auto;overflow-x:hidden;
+  transition:width .25s cubic-bezier(.4,0,.2,1);
+}
+#sidebar.collapsed{width:52px}
+#sidebar.collapsed .nav-label,.sidebar-section-title,#sidebar.collapsed .nav-badge{display:none}
+#sidebar.collapsed .nav-item{padding:10px;justify-content:center}
+
+.sidebar-header{padding:10px 12px 6px;display:flex;align-items:center;justify-content:space-between}
+.sidebar-section-title{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.8px;padding:12px 14px 4px}
+.collapse-btn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:var(--bg3);border:1px solid var(--border);font-size:12px;color:var(--text3);transition:var(--transition)}
+.collapse-btn:hover{background:var(--bg4);color:var(--text)}
+
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 14px;cursor:pointer;
+  transition:var(--transition);color:var(--text2);
+  border-left:2px solid transparent;
+  font-size:13px;font-weight:400;
+  position:relative;
+}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(59,130,246,.1);color:var(--blue);border-left-color:var(--blue);font-weight:500}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-label{flex:1}
+.nav-badge{background:var(--red);color:#fff;font-size:9px;padding:2px 5px;border-radius:10px;font-weight:700;flex-shrink:0}
+.nav-badge.yellow{background:var(--yellow)}
+.nav-badge.green{background:var(--green2)}
+
+/* ═══ CONTENT ═══ */
+#content{flex:1;overflow-y:auto;padding:18px;background:var(--bg);position:relative}
+.page{display:none;animation:fadeUp .2s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ═══ PAGE HEADER ═══ */
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.ph-left{display:flex;align-items:center;gap:10px}
+.ph-title{font-size:20px;font-weight:700}
+.ph-sub{font-size:12px;color:var(--text3)}
+.ph-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ═══ KPI CARDS ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,.02));pointer-events:none}
+.kpi:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-1px)}
+.kpi.urgent{border-color:rgba(244,63,94,.3);background:rgba(244,63,94,.05)}
+.kpi.warn{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05)}
+.kpi.ok{border-color:rgba(34,211,160,.3);background:rgba(34,211,160,.05)}
+.kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-sub{font-size:11px;color:var(--text3)}
+.kpi-sub .r{color:var(--red)} .kpi-sub .y{color:var(--yellow)} .kpi-sub .g{color:var(--green)}
+
+/* ═══ TABLES ═══ */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.card-body-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.card-header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.card-title{font-size:13px;font-weight:600}
+.filter-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg3);flex-wrap:wrap}
+.srch{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.srch input{border:none;background:transparent;color:var(--text);font-size:12px;font-family:var(--font);outline:none;width:150px}
+.fsel{padding:5px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer;outline:none}
+
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:500px}
+thead tr{background:var(--bg3)}
+th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--text)}
+th.sort-asc::after{content:' ↑'}th.sort-desc::after{content:' ↓'}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:12px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+
+.uid{font-weight:600;color:var(--text);font-size:13px;font-family:var(--mono)}
+.usub{font-size:10px;color:var(--text3)}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.bdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.b-red{background:rgba(244,63,94,.15);color:var(--red)} .b-red .bdot{background:var(--red)}
+.b-yellow{background:rgba(245,158,11,.15);color:var(--yellow)} .b-yellow .bdot{background:var(--yellow)}
+.b-green{background:rgba(34,211,160,.15);color:var(--green)} .b-green .bdot{background:var(--green)}
+.b-blue{background:rgba(59,130,246,.15);color:var(--blue)} .b-blue .bdot{background:var(--blue)}
+.b-orange{background:rgba(251,146,60,.15);color:var(--orange)} .b-orange .bdot{background:var(--orange)}
+.b-purple{background:rgba(167,139,250,.15);color:var(--purple)} .b-purple .bdot{background:var(--purple)}
+.b-teal{background:rgba(45,212,191,.15);color:var(--teal)} .b-teal .bdot{background:var(--teal)}
+.b-gray{background:var(--bg4);color:var(--text3)} .b-gray .bdot{background:var(--text3)}
+
+.pbar-wrap{min-width:90px}
+.pbar{height:4px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.pfill{height:100%;border-radius:99px;background:var(--blue)}
+
+/* ═══ BUTTONS ═══ */
+.btn{padding:6px 12px;border-radius:var(--r);border:none;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:500;transition:var(--transition);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn.blue{background:var(--blue);color:#fff} .btn.blue:hover{background:var(--blue2)}
+.btn.green{background:var(--green2);color:#fff}
+.btn.red{background:var(--red2);color:#fff}
+.btn.outline{background:transparent;color:var(--text2);border:1px solid var(--border)} .btn.outline:hover{background:var(--bg3);color:var(--text)}
+.btn.ghost{background:transparent;color:var(--text3)} .btn.ghost:hover{color:var(--text)}
+.btn.sm{padding:4px 8px;font-size:11px}
+.btn.xs{padding:3px 6px;font-size:10px}
+.ib{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:13px;transition:var(--transition)}
+.ib:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.ib.danger:hover{background:rgba(244,63,94,.1);color:var(--red);border-color:rgba(244,63,94,.3)}
+
+/* ═══ DROPDOWNS ═══ */
+.dropdown{position:relative}
+.dmenu{display:none;position:absolute;top:calc(100%+5px);left:0;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:5px;min-width:210px;box-shadow:var(--shadow);z-index:500;animation:fadeIn .15s ease}
+.dmenu.open{display:block}
+.dmenu.right{left:auto;right:0}
+.dm-s{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.8px;padding:5px 8px 3px}
+.dmi{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;color:var(--text2);font-size:12px;transition:var(--transition)}
+.dmi:hover{background:var(--bg3);color:var(--text)}
+.dmi .di{font-size:14px;width:16px;text-align:center}
+.dm-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* ═══ MODALS ═══ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:22px;width:580px;max-width:96vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow);animation:slideUp .22s ease;position:relative}
+.modal.wide{width:740px}
+.modal.xl{width:900px}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* Draggable windows */
+.modal.draggable{position:fixed;cursor:default;max-height:90vh;resize:both;overflow:auto;min-width:400px;min-height:200px}
+.modal-drag-bar{cursor:move;user-select:none;margin:-22px -22px 16px;padding:12px 22px;background:var(--bg3);border-bottom:1px solid var(--border);border-radius:var(--r2) var(--r2) 0 0;display:flex;align-items:center;gap:8px}
+.drag-dots{display:flex;gap:5px}
+.drag-dot{width:10px;height:10px;border-radius:50%}
+@media(max-width:768px){
+  .modal.draggable{position:relative!important;left:auto!important;top:auto!important;resize:none;min-width:unset;width:95vw!important}
+  .modal-drag-bar{cursor:default}
+}
+
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.mt{font-size:15px;font-weight:600}
+.mc{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:16px}
+.mc:hover{background:var(--bg4);color:var(--text)}
+
+/* ═══ FORMS ═══ */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-row.cols3{grid-template-columns:1fr 1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fg.full{grid-column:1/-1}
+label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;font-family:var(--font);outline:none;transition:var(--transition);width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);background:var(--bg4)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;min-height:70px}
+input[type=checkbox],input[type=radio]{width:auto}
+.mf{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* ═══ TABS ═══ */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px;overflow-x:auto}
+.tab{padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:var(--transition);white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tc{display:none}
+.tc.active{display:block}
+
+/* ═══ CHARTS ═══ */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.cc-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.barchart{display:flex;align-items:flex-end;gap:5px;height:70px}
+.bar-g{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1}
+.bar-b{width:100%;border-radius:3px 3px 0 0;background:var(--blue);transition:height .3s ease;min-height:2px}
+.bar-b:hover{background:var(--blue2)}
+.bar-bl{font-size:9px;color:var(--text3)}
+.bar-bv{font-size:9px;color:var(--text2)}
+
+/* ═══ FUEL MODULE ═══ */
+.fuel-tank{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.tank-icon{font-size:28px}
+.tank-info{flex:1}
+.tank-name{font-weight:600;font-size:13px}
+.tank-loc{font-size:11px;color:var(--text3)}
+.tank-level-bar{height:8px;background:var(--bg4);border-radius:99px;overflow:hidden;margin-top:6px;margin-bottom:4px}
+.tank-fill{height:100%;border-radius:99px;transition:width .5s ease}
+.tank-stats{display:flex;gap:12px;font-size:11px;color:var(--text3)}
+.tank-stats b{color:var(--text)}
+.fuel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:14px}
+
+/* ═══ DEPOT MAP ═══ */
+.depot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:14px}
+.depot-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:var(--transition)}
+.depot-card:hover{border-color:var(--blue);background:var(--bg3)}
+.depot-card.active-depot{border-color:var(--blue);background:rgba(59,130,246,.07)}
+.depot-name{font-weight:600;font-size:13px;margin-bottom:4px}
+.depot-addr{font-size:11px;color:var(--text3);margin-bottom:8px}
+.depot-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ds{background:var(--bg3);border-radius:6px;padding:8px;text-align:center}
+.ds-val{font-size:16px;font-weight:700}
+.ds-label{font-size:10px;color:var(--text3)}
+
+/* ═══ USER MANAGEMENT ═══ */
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.user-row:last-child{border-bottom:none}
+.u-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.u-info{flex:1}
+.u-name{font-weight:600;font-size:13px}
+.u-role{font-size:11px;color:var(--text3)}
+.u-status{font-size:11px}
+.u-actions{display:flex;gap:5px}
+.role-chip{padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.role-admin{background:rgba(167,139,250,.15);color:var(--purple)}
+.role-tech{background:rgba(59,130,246,.15);color:var(--blue)}
+.role-viewer{background:var(--bg4);color:var(--text3)}
+.role-manager{background:rgba(34,211,160,.15);color:var(--green)}
+
+/* ═══ CALENDAR ═══ */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dn{text-align:center;font-size:10px;color:var(--text3);padding:5px;font-weight:700}
+.cal-day{aspect-ratio:1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px;cursor:pointer;transition:var(--transition);overflow:hidden}
+.cal-day:hover{background:var(--bg3);border-color:var(--border2)}
+.cal-day.today{border-color:var(--blue);background:rgba(59,130,246,.08)}
+.cal-day.other-m .dn{color:var(--text4)}
+.cal-day.has-ev{background:rgba(245,158,11,.04)}
+.dn{font-weight:600;font-size:11px;color:var(--text)}
+.ev-pill{font-size:8px;border-radius:3px;padding:1px 3px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-pm{background:rgba(245,158,11,.2);color:var(--yellow)}
+.ep-wo{background:rgba(59,130,246,.2);color:var(--blue)}
+.ep-rep{background:rgba(244,63,94,.2);color:var(--red)}
+.ep-fuel{background:rgba(45,212,191,.2);color:var(--teal)}
+.ep-insp{background:rgba(167,139,250,.2);color:var(--purple)}
+
+/* ═══ REPORTS ═══ */
+.rep-tree{display:flex;flex-direction:column;gap:1px}
+.rg-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:5px}
+.rg-title:hover{background:var(--bg3);color:var(--text)}
+.ri{padding:6px 8px 6px 20px;border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;transition:var(--transition)}
+.ri:hover{background:var(--bg3);color:var(--blue)}
+.ri.active{background:rgba(59,130,246,.12);color:var(--blue);font-weight:500}
+
+/* ═══ MOBILE BOTTOM NAV ═══ */
+#mobile-bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  z-index:350;padding:4px 0 env(safe-area-inset-bottom,4px);
+}
+#mobile-bottom-nav .mbn-items{display:flex;justify-content:space-around;align-items:center}
+.mbn-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;color:var(--text3);font-size:10px;border-radius:var(--r);transition:var(--transition);min-width:48px}
+.mbn-item.active{color:var(--blue)}
+.mbn-item .mbn-icon{font-size:18px}
+@media(max-width:768px){
+  #mobile-bottom-nav{display:block}
+  #content{padding-bottom:75px!important}
+  /* Full-width topbar dropdowns on mobile */
+  #topbar .dropdown .dmenu,#topbar #qa-dd,#topbar #config-dd,#topbar #rep-dd{
+    position:fixed;top:var(--topbar-h)!important;left:0!important;right:0!important;
+    width:100%!important;max-width:100%!important;border-radius:0;
+    max-height:60dvh;overflow-y:auto;
+  }
+}
+
+/* ═══ TOAST ═══ */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:10px 14px;font-size:12px;z-index:9999;display:none;box-shadow:var(--shadow);max-width:280px;animation:slideIn .2s ease}
+@media(max-width:768px){#toast{bottom:72px;right:10px;left:10px;max-width:none}}
+@keyframes slideIn{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ═══ NOTIFICATIONS PANEL ═══ */
+.notif-panel{position:fixed;top:var(--topbar-h);right:0;width:320px;height:calc(100vh - var(--topbar-h));background:var(--bg2);border-left:1px solid var(--border);z-index:400;display:none;flex-direction:column;box-shadow:var(--shadow);animation:slideLeft .2s ease}
+.notif-panel.open{display:flex}
+@keyframes slideLeft{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
+.np-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.np-body{flex:1;overflow-y:auto;padding:8px}
+.notif-item{padding:10px 12px;border-radius:var(--r);margin-bottom:4px;cursor:pointer;transition:var(--transition);border:1px solid transparent}
+.notif-item:hover{background:var(--bg3);border-color:var(--border)}
+.notif-item.unread{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.2)}
+.ni-title{font-size:12px;font-weight:500;margin-bottom:2px}
+.ni-sub{font-size:11px;color:var(--text3)}
+.ni-time{font-size:10px;color:var(--text4);margin-top:3px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  :root{--sidebar-w:0px;--topbar-h:50px}
+  #sidebar{position:fixed;top:var(--topbar-h);left:0;height:calc(100dvh - var(--topbar-h));z-index:300;width:240px;display:none;overflow-y:auto}
+  #sidebar.mobile-open{display:flex}
+  #content{padding:10px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #main{overflow:hidden;height:calc(100dvh - var(--topbar-h))}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .chart-grid{grid-template-columns:1fr}
+  .modal{width:95vw!important;padding:16px;max-height:90dvh}
+  .form-row{grid-template-columns:1fr}
+  .form-row.cols3{grid-template-columns:1fr}
+  .filter-bar{gap:4px}
+  .srch input{width:110px}
+  #gsearch{display:none} /* hide topbar search on mobile, use per-page filters */
+  .ph{flex-direction:column;align-items:flex-start}
+  .ph-actions{width:100%;flex-wrap:wrap}
+  .depot-grid,.fuel-grid{grid-template-columns:1fr}
+  .user-info .user-name,.user-info .user-role{display:none}
+  /* Topbar dropdowns: push to left edge to prevent overflow */
+  .dmenu{max-width:90vw;left:0!important;right:auto}
+  .dmenu.right{left:auto!important;right:0!important}
+  /* Topbar: hide less important buttons */
+  .tb-btn.ghost:not(#sidebar-toggle){font-size:0;padding:6px 8px}
+  .tb-btn.ghost:not(#sidebar-toggle) .emoji{font-size:14px}
+  /* Table: enable horizontal scroll per card */
+  .card{overflow:hidden}
+  .card > table,.card > .filter-bar ~ table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* Reports layout */
+  .rep-layout{flex-direction:column!important}
+  /* Notif and settings panels full width */
+  .notif-panel,.settings-panel{width:100vw}
+  /* Topbar compact */
+  #topbar{padding:0 8px;gap:2px}
+  .logo{margin-right:0}
+  .tb-btn.primary{font-size:11px;padding:5px 8px}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr}
+  .ph-actions{width:100%}
+  table{font-size:11px}
+  td,th{padding:7px 8px}
+  .login-card{padding:24px 16px}
+  .modal{padding:12px}
+}
+
+/* Settings Panel */
+.settings-panel{position:fixed;top:var(--topbar-h);right:0;width:360px;height:calc(100vh - var(--topbar-h));background:var(--bg2);border-left:1px solid var(--border);z-index:400;display:none;flex-direction:column;overflow-y:auto;box-shadow:var(--shadow)}
+.settings-panel.open{display:flex;flex-direction:column}
+.sp-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:14px;flex-shrink:0}
+.sp-body{flex:1;padding:12px;overflow-y:auto}
+.sp-section{margin-bottom:18px}
+.sp-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.sp-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.sp-row:last-child{border-bottom:none}
+.sp-label{font-size:12px;color:var(--text2)}
+.toggle{width:36px;height:20px;background:var(--bg4);border-radius:10px;position:relative;cursor:pointer;transition:var(--transition);border:1px solid var(--border2)}
+.toggle.on{background:var(--blue)}
+.toggle-knob{position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:2px;left:2px;transition:var(--transition);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle.on .toggle-knob{left:18px}
+.color-option{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:var(--transition)}
+.color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--blue)}
+.color-opts{display:flex;gap:6px}
+
+/* Tooltip */
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100%+5px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;font-size:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:var(--transition);z-index:999}
+.tip:hover::after{opacity:1}
+
+/* Activity feed */
+.activity-feed{display:flex;flex-direction:column;gap:1px}
+.af-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--r);transition:var(--transition)}
+.af-item:hover{background:var(--bg3)}
+.af-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.af-content{flex:1}
+.af-msg{font-size:12px}
+.af-msg strong{color:var(--text)}
+.af-time{font-size:10px;color:var(--text3);margin-top:2px}
+.af-user{font-size:10px;color:var(--text3)}
+
+/* Mobile overlay */
+#mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:290}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo"><div class="logo-icon">⚙</div> Fleet Maintenance Pro</div>
+    <div class="login-sub">Système de gestion de flotte — v2.0</div>
+    <div class="login-field">
+      <label>Nom d'utilisateur</label>
+      <input type="text" id="li-user" value="admin" placeholder="Entrez votre nom d'utilisateur">
+    </div>
+    <div class="login-field">
+      <label>Mot de passe</label>
+      <input type="password" id="li-pass" value="admin123" placeholder="Entrez votre mot de passe">
+    </div>
+    <div class="login-field">
+      <label>Entreprise / Dépôt</label>
+      <select id="li-company">
+        <option value="fleetcorp">FleetCorp SA — Siège Social</option>
+        <option value="depot1">Dépôt Nord — Montréal</option>
+        <option value="depot2">Dépôt Sud — Québec</option>
+        <option value="depot3">Dépôt Est — Sherbrooke</option>
+      </select>
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Connexion</button>
+    <div class="login-users">
+      <div class="login-users-title">Connexion rapide</div>
+      <div class="login-user-chip" onclick="quickLogin('Admin Principal','admin','#7c3aed')">
+        <div class="av" style="background:#7c3aed">AP</div> Admin Principal
+      </div>
+      <div class="login-user-chip" onclick="quickLogin('Robert Boyce','tech','#2563eb')">
+        <div class="av" style="background:#2563eb">RB</div> R. Boyce
+      </div>
+      <div class="login-user-chip" onclick="quickLogin('Sophie Martin','manager','#059669')">
+        <div class="av" style="background:#059669">SM</div> S. Martin
+      </div>
+      <div class="login-user-chip" onclick="quickLogin('Roger Daniels','tech','#0891b2')">
+        <div class="av" style="background:#0891b2">RD</div> R. Daniels
+      </div>
+      <div class="login-user-chip" onclick="quickLogin('Jean Tremblay','viewer','#78716c')">
+        <div class="av" style="background:#78716c">JT</div> J. Tremblay
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app" style="display:none;flex-direction:column;height:100vh;overflow:hidden">
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <button class="tb-btn ghost" id="sidebar-toggle" onclick="toggleSidebar()" style="padding:6px 8px">☰</button>
+  <div class="logo">
+    <div class="logo-icon">⚙</div>
+    <span class="logo-text" style="display:none">Fleet Maintenance Pro</span>
+  </div>
+
+  <div class="dropdown">
+    <button class="tb-btn primary" onclick="toggleDD('qa-dd')">+ Actions Rapides</button>
+    <div class="dmenu" id="qa-dd">
+      <div class="dm-s">Créer</div>
+      <div class="dmi" onclick="openModal('m-eq');closeAllDD()"><span class="di">⚙</span> Équipement</div>
+      <div class="dmi" onclick="openModal('m-wo');closeAllDD()"><span class="di">📋</span> Ordre de Travail</div>
+      <div class="dmi" onclick="openModal('m-rep');closeAllDD()"><span class="di">🔧</span> Demande Réparation</div>
+      <div class="dmi" onclick="openModal('m-fuel-tx');closeAllDD()"><span class="di">⛽</span> Transaction Carburant</div>
+      <div class="dmi" onclick="openModal('m-insp');closeAllDD()"><span class="di">🔍</span> Inspection DOT</div>
+      <div class="dmi" onclick="openModal('m-part');closeAllDD()"><span class="di">🔩</span> Pièce d'Inventaire</div>
+      <div class="dmi" onclick="openModal('m-po');closeAllDD()"><span class="di">📄</span> Bon de Commande</div>
+      <div class="dmi" onclick="openModal('m-expense');closeAllDD()"><span class="di">💰</span> Dépense</div>
+      <div class="dm-sep"></div>
+      <div class="dm-s">Mise à Jour</div>
+      <div class="dmi" onclick="openModal('m-meters');closeAllDD()"><span class="di">📊</span> Màj Compteurs (Ctrl+M)</div>
+      <div class="dmi" onclick="showPage('fuel');closeAllDD()"><span class="di">⛽</span> Gestion Carburant</div>
+      <div class="dmi" onclick="openModal('m-user');closeAllDD()"><span class="di">👤</span> Nouvel Utilisateur</div>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <button class="tb-btn ghost" onclick="toggleDD('config-dd')">⚙ Config</button>
+    <div class="dmenu" id="config-dd">
+      <div class="dm-s">Entreprise</div>
+      <div class="dmi" onclick="openModal('m-company');closeAllDD()">🏢 Paramètres</div>
+      <div class="dmi" onclick="showPage('depots');closeAllDD()">📍 Dépôts & Emplacements</div>
+      <div class="dmi" onclick="showPage('users');closeAllDD()">👥 Utilisateurs & Droits</div>
+      <div class="dmi" onclick="openSettings()">🎨 Préférences Interface</div>
+      <div class="dm-sep"></div>
+      <div class="dm-s">Maintenance</div>
+      <div class="dmi" onclick="closeAllDD()">📅 Modèles PM</div>
+      <div class="dmi" onclick="closeAllDD()">🔗 Associations Pièces</div>
+      <div class="dmi" onclick="closeAllDD()">📦 Kits de Service</div>
+      <div class="dm-sep"></div>
+      <div class="dm-s">Imports / Exports</div>
+      <div class="dmi" onclick="closeAllDD()">📤 Importer Carburant CSV</div>
+      <div class="dmi" onclick="closeAllDD()">🗄 Importer Compteurs GPS</div>
+      <div class="dmi" onclick="closeAllDD()">📊 Exporter Données</div>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <button class="tb-btn ghost" onclick="toggleDD('rep-dd')">📊 Rapports</button>
+    <div class="dmenu" id="rep-dd">
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">📈 Historique (Résumé Coûts)</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">🚗 Utilisation Équipement</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">⛽ Consommation Carburant</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">📦 Inventaire (Réappro)</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">⏱ Temps d'Arrêt</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">📋 Ordres de Travail</div>
+      <div class="dmi" onclick="showPage('reports');closeAllDD()">💰 Analyse Coûts</div>
+    </div>
+  </div>
+
+  <input type="text" id="gsearch" placeholder="🔍  Rechercher équipement, OT, pièce, dépôt..." oninput="globalSearch(this.value)">
+
+  <!-- GLOBAL SEARCH RESULTS -->
+  <div id="search-results" style="display:none;position:absolute;top:calc(var(--topbar-h) - 2px);left:50%;transform:translateX(-50%);width:500px;max-width:90vw;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);box-shadow:var(--shadow);z-index:600;max-height:320px;overflow-y:auto"></div>
+
+  <div class="tb-right">
+    <div class="notif-btn tip" data-tip="Notifications" onclick="toggleNotifications()">
+      🔔<span class="notif-badge" id="notif-count">7</span>
+    </div>
+    <button class="tb-btn ghost tip" data-tip="Préférences" onclick="openSettings()" style="padding:6px 8px">🎨</button>
+    <div class="user-chip dropdown" onclick="toggleDD('user-dd')">
+      <div class="avatar" id="user-avatar" style="background:#7c3aed">AP</div>
+      <div class="user-info">
+        <div class="user-name" id="user-display">Admin Principal</div>
+        <div class="user-role" id="user-role-disp">Administrateur</div>
+      </div>
+      <div class="dmenu right" id="user-dd">
+        <div class="dmi" onclick="openModal('m-profile');closeAllDD()">👤 Mon Profil</div>
+        <div class="dmi" onclick="openSettings();closeAllDD()">⚙ Préférences</div>
+        <div class="dm-sep"></div>
+        <div class="dmi" onclick="doLogout()">🚪 Déconnexion</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="mobile-overlay" onclick="closeMobileNav()"></div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-section-title" style="padding:0;font-size:10px">NAVIGATION</span>
+      <div class="collapse-btn" onclick="toggleSidebar()">◀</div>
+    </div>
+
+    <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Accueil</span></div>
+    <div class="sidebar-section-title">FLOTTE</div>
+    <div class="nav-item" onclick="showPage('equipment')"><span class="nav-icon">⚙</span><span class="nav-label">Équipements</span><span class="nav-badge">4</span></div>
+    <div class="nav-item" onclick="showPage('workorders')"><span class="nav-icon">📋</span><span class="nav-label">Ordres de Travail</span><span class="nav-badge">5</span></div>
+    <div class="nav-item" onclick="showPage('inspections')"><span class="nav-icon">🔍</span><span class="nav-label">Inspections DOT</span></div>
+    <div class="nav-item" onclick="showPage('tires')"><span class="nav-icon">🛞</span><span class="nav-label">Pneumatiques</span></div>
+
+    <div class="sidebar-section-title">CARBURANT</div>
+    <div class="nav-item" onclick="showPage('fuel')"><span class="nav-icon">⛽</span><span class="nav-label">Gestion Carburant</span><span class="nav-badge yellow" id="fuel-badge">↓</span></div>
+    <div class="nav-item" onclick="showPage('fuel-tanks')"><span class="nav-icon">🛢</span><span class="nav-label">Citernes & Dépôts</span></div>
+
+    <div class="sidebar-section-title">ENTREPÔTS</div>
+    <div class="nav-item" onclick="showPage('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventaire Pièces</span><span class="nav-badge yellow">!</span></div>
+    <div class="nav-item" onclick="showPage('depots')"><span class="nav-icon">🏭</span><span class="nav-label">Dépôts</span></div>
+    <div class="nav-item" onclick="showPage('purchasing')"><span class="nav-icon">🛒</span><span class="nav-label">Achats</span></div>
+
+    <div class="sidebar-section-title">RESSOURCES</div>
+    <div class="nav-item" onclick="showPage('employees')"><span class="nav-icon">👤</span><span class="nav-label">Employés</span></div>
+    <div class="nav-item" onclick="showPage('vendors')"><span class="nav-icon">🏢</span><span class="nav-label">Fournisseurs</span></div>
+    <div class="nav-item" onclick="showPage('users')"><span class="nav-icon">👥</span><span class="nav-label">Utilisateurs</span></div>
+
+    <div class="sidebar-section-title">ANALYSE</div>
+    <div class="nav-item" onclick="showPage('calendar')"><span class="nav-icon">📅</span><span class="nav-label">Calendrier</span></div>
+    <div class="nav-item" onclick="showPage('reports')"><span class="nav-icon">📊</span><span class="nav-label">Rapports</span></div>
+    <div class="nav-item" onclick="showPage('activity')"><span class="nav-icon">📡</span><span class="nav-label">Activité Live</span><span class="nav-badge green">●</span></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+  <!-- ══════ HOME ══════ -->
+  <div id="page-home" class="page active">
+    <div class="ph">
+      <div class="ph-left">
+        <div>
+          <div class="ph-title">Tableau de Bord</div>
+          <div class="ph-sub" id="home-welcome">Bonjour, chargement...</div>
+        </div>
+      </div>
+      <div class="ph-actions">
+        <select class="fsel" onchange="filterByDepot(this.value)">
+          <option value="">Tous les Dépôts</option>
+          <option>Dépôt Nord — Montréal</option>
+          <option>Dépôt Sud — Québec</option>
+          <option>Dépôt Est — Sherbrooke</option>
+        </select>
+        <button class="btn outline" onclick="openModal('m-meters')">📊 Màj Compteurs</button>
+        <button class="btn blue" onclick="openModal('m-wo')">+ Nouvel OT</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi urgent" onclick="showPage('equipment')">
+        <div class="kpi-label">Équipements à Traiter</div>
+        <div class="kpi-val" style="color:var(--red)">4</div>
+        <div class="kpi-sub"><span class="r">3 en retard</span> · <span class="y">1 bientôt dû</span></div>
+      </div>
+      <div class="kpi warn" onclick="showPage('workorders')">
+        <div class="kpi-label">Ordres de Travail</div>
+        <div class="kpi-val" style="color:var(--yellow)">5</div>
+        <div class="kpi-sub"><span class="g">1 ouvert</span> · <span style="color:var(--blue)">3 en cours</span> · <span class="y">1 attente</span></div>
+      </div>
+      <div class="kpi warn" onclick="showPage('inventory')">
+        <div class="kpi-label">Stock Bas / Rupture</div>
+        <div class="kpi-val" style="color:var(--orange)">3</div>
+        <div class="kpi-sub"><span class="r">1 rupture</span> · <span class="y">2 stock faible</span></div>
+      </div>
+      <div class="kpi" onclick="showPage('fuel')">
+        <div class="kpi-label">Citernes Carburant</div>
+        <div class="kpi-val" style="color:var(--teal)">4</div>
+        <div class="kpi-sub"><span class="y">1 bas</span> · 3 OK — 1,240L restants</div>
+      </div>
+      <div class="kpi" onclick="showPage('employees')">
+        <div class="kpi-label">Renouvellements Employés</div>
+        <div class="kpi-val" style="color:var(--red)">2</div>
+        <div class="kpi-sub"><span class="r">2 expirés</span> · 0 bientôt</div>
+      </div>
+      <div class="kpi ok" onclick="showPage('inspections')">
+        <div class="kpi-label">Inspections DOT</div>
+        <div class="kpi-val" style="color:var(--green)">6</div>
+        <div class="kpi-sub">Complétées cette semaine</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="cc-title">📈 Coûts de Maintenance ($) — 6 mois</div>
+        <div class="barchart">
+          <div class="bar-g"><div class="bar-b" style="height:28px;background:var(--bg5)"></div><div class="bar-bl">Oct</div><div class="bar-bv">10 440 000 GNF</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:45px"></div><div class="bar-bl">Nov</div><div class="bar-bv">18 270 000 GNF</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:35px;background:var(--bg5)"></div><div class="bar-bl">Déc</div><div class="bar-bv">13 920 000 GNF</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:60px;background:var(--yellow)"></div><div class="bar-bl">Jan</div><div class="bar-bv">29 580 000 GNF</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:40px"></div><div class="bar-bl">Fév</div><div class="bar-bv">16 530 000 GNF</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:52px;background:var(--green2)"></div><div class="bar-bl">Mar</div><div class="bar-bv">24 360 000 GNF</div></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">⛽ Consommation Carburant (L) — Par Dépôt</div>
+        <div class="barchart">
+          <div class="bar-g"><div class="bar-b" style="height:55px;background:var(--teal)"></div><div class="bar-bl">Mtl</div><div class="bar-bv">480L</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:38px;background:var(--teal)"></div><div class="bar-bl">Qc</div><div class="bar-bv">320L</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:22px;background:var(--teal)"></div><div class="bar-bl">Sher</div><div class="bar-bv">190L</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:15px;background:var(--bg5)"></div><div class="bar-bl">Mob</div><div class="bar-bv">120L</div></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">⏱ Temps d'Arrêt (heures) — 4 semaines</div>
+        <div class="barchart">
+          <div class="bar-g"><div class="bar-b" style="height:30px;background:var(--red)"></div><div class="bar-bl">Sem 1</div><div class="bar-bv">6h</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:50px;background:var(--red)"></div><div class="bar-bl">Sem 2</div><div class="bar-bv">10h</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:35px;background:var(--orange)"></div><div class="bar-bl">Sem 3</div><div class="bar-bv">7h</div></div>
+          <div class="bar-g"><div class="bar-b" style="height:15px;background:var(--green2)"></div><div class="bar-bl">Sem 4</div><div class="bar-bv">3h</div></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">🔧 Répartition Types Maintenance</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;height:70px">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="27" fill="none" stroke="var(--bg4)" stroke-width="9"/>
+            <circle cx="35" cy="35" r="27" fill="none" stroke="var(--blue)" stroke-width="9" stroke-dasharray="101 69" stroke-dashoffset="-17" stroke-linecap="butt" transform="rotate(-90 35 35)"/>
+            <circle cx="35" cy="35" r="27" fill="none" stroke="var(--red)" stroke-width="9" stroke-dasharray="52 118" stroke-dashoffset="-118" stroke-linecap="butt" transform="rotate(-90 35 35)"/>
+            <circle cx="35" cy="35" r="27" fill="none" stroke="var(--teal)" stroke-width="9" stroke-dasharray="17 153" stroke-dashoffset="-170" stroke-linecap="butt" transform="rotate(-90 35 35)"/>
+            <text x="35" y="39" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700">OT</text>
+          </svg>
+          <div style="font-size:11px;display:flex;flex-direction:column;gap:5px">
+            <div><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:2px;margin-right:5px"></span>PM <b style="color:var(--text)">60%</b></div>
+            <div><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:5px"></span>Réparation <b style="color:var(--text)">30%</b></div>
+            <div><span style="display:inline-block;width:10px;height:10px;background:var(--teal);border-radius:2px;margin-right:5px"></span>Inspection <b style="color:var(--text)">10%</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚠ Équipements Prioritaires</div>
+        <div class="srch" style="margin-left:auto">
+          <span style="color:var(--text3)">🔍</span>
+          <input type="text" placeholder="Filtrer..." oninput="filterTbl(this,'home-tbl')">
+        </div>
+        <select class="fsel">
+          <option>Tous Dépôts</option><option>Dépôt Nord</option><option>Dépôt Sud</option><option>Dépôt Est</option>
+        </select>
+        <button class="btn sm blue" onclick="openModal('m-wo')">⚡ Émettre OT</button>
+      </div>
+      <table id="home-tbl">
+        <thead><tr><th><input type="checkbox" onchange="selAll(this,'home-tbl')"></th><th>N° Unité</th><th>Dépôt</th><th>Type</th><th>Statut PM</th><th>Km / Hrs</th><th>Prochain PM</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">224</div><div class="usub">Manning HIQ-1250 Presse</div></td>
+            <td><span class="badge b-blue"><span class="bdot"></span>Dépôt Nord</span></td>
+            <td>Presse à Poinçon</td>
+            <td><span class="badge b-yellow"><span class="bdot"></span>Bientôt Dû</span></td>
+            <td>162 hrs</td>
+            <td>dans 8 hrs</td>
+            <td class="acell">
+              <button class="btn xs blue" onclick="event.stopPropagation();openModal('m-wo')">📋 OT</button>
+              <button class="ib" onclick="event.stopPropagation();openModal('m-detail')" title="Détail">📄</button>
+            </td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">290</div><div class="usub">Mig Welder Davidson K-5463</div></td>
+            <td><span class="badge b-teal"><span class="bdot"></span>Dépôt Sud</span></td>
+            <td>Soudeuse MIG</td>
+            <td><span class="badge b-red"><span class="bdot"></span>En Retard (PM+Réparation)</span></td>
+            <td>179 hrs</td>
+            <td><span style="color:var(--red)">Dépassé 19 hrs</span></td>
+            <td class="acell">
+              <button class="btn xs blue" onclick="event.stopPropagation();openModal('m-wo')">📋 OT</button>
+              <button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button>
+            </td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">AC-1</div><div class="usub">McMaster JetCool Compresseur</div></td>
+            <td><span class="badge b-purple"><span class="bdot"></span>Dépôt Est</span></td>
+            <td>Compresseur d'Air</td>
+            <td><span class="badge b-red"><span class="bdot"></span>En Retard (PM)</span></td>
+            <td>0 km</td>
+            <td><span style="color:var(--red)">Dépassé 14 jours</span></td>
+            <td class="acell">
+              <button class="btn xs blue" onclick="event.stopPropagation();openModal('m-wo')">📋 OT</button>
+              <button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button>
+            </td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">TK-01</div><div class="usub">Camion Volvo FH 16</div></td>
+            <td><span class="badge b-blue"><span class="bdot"></span>Dépôt Nord</span></td>
+            <td>Camion Long Cour.</td>
+            <td><span class="badge b-red"><span class="bdot"></span>En Retard (Vidange)</span></td>
+            <td>42,180 km</td>
+            <td><span style="color:var(--red)">Dépassé 1,180 km</span></td>
+            <td class="acell">
+              <button class="btn xs blue" onclick="event.stopPropagation();openModal('m-wo')">📋 OT</button>
+              <button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ EQUIPMENT ══════ -->
+  <div id="page-equipment" class="page">
+    <div class="ph">
+      <div class="ph-title">⚙ Équipements</div>
+      <div class="ph-actions">
+        <button class="btn outline sm">📤 Importer</button>
+        <button class="btn outline sm">📊 Exporter</button>
+        <button class="btn blue" onclick="openModal('m-eq')">+ Nouvel Équipement</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher..." oninput="filterTbl(this,'eq-tbl')"></div>
+        <select class="fsel"><option>Tous Dépôts</option><option>Dépôt Nord</option><option>Dépôt Sud</option><option>Dépôt Est</option></select>
+        <select class="fsel"><option>Tous Types</option><option>Camion</option><option>Chariot</option><option>Compresseur</option><option>Soudeuse</option><option>Génératrice</option></select>
+        <select class="fsel"><option>Tous Statuts</option><option>En Retard</option><option>Bientôt Dû</option><option>OK</option><option>Inactif</option></select>
+        <div style="margin-left:auto;display:flex;gap:5px">
+          <button class="btn sm outline">⚙ Colonnes</button>
+          <button class="btn sm outline" onclick="openModal('m-meters')">📊 Màj Compteurs</button>
+        </div>
+      </div>
+      <table id="eq-tbl">
+        <thead><tr>
+          <th><input type="checkbox"></th>
+          <th>N° Unité</th><th>Dépôt</th><th>Type</th><th>Marque/Modèle</th>
+          <th>Compteur</th><th>N° Série</th><th>% Avancement PM</th><th>Statut</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">TK-01</div><div class="usub">Volvo FH 16</div></td>
+            <td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td>
+            <td>Camion</td><td>Volvo FH 16 – 2021</td>
+            <td>42,180 km</td><td>VH83884HY38D</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:104%;background:var(--red)"></div></div><div class="usub" style="margin-top:2px">104% – Vidange dépassée</div></div></td>
+            <td><span class="badge b-red"><span class="bdot"></span>En Retard</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib" onclick="event.stopPropagation()">⋮</button></td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">TK-02</div><div class="usub">Mercedes Actros</div></td>
+            <td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td>
+            <td>Camion</td><td>Mercedes Actros – 2020</td>
+            <td>38,560 km</td><td>ME39847520</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:55%;background:var(--green)"></div></div><div class="usub" style="margin-top:2px">55% – OK</div></div></td>
+            <td><span class="badge b-green"><span class="bdot"></span>OK</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib">⋮</button></td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">CH-03</div><div class="usub">Toyota 5FBE15</div></td>
+            <td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td>
+            <td>Chariot Élévateur</td><td>Toyota 5FBE15 – 2022</td>
+            <td>1,890 hrs</td><td>5FM212-76H871</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:30%;background:var(--orange)"></div></div><div class="usub" style="margin-top:2px">30% – Bientôt</div></div></td>
+            <td><span class="badge b-yellow"><span class="bdot"></span>Bientôt Dû</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib">⋮</button></td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">224</div><div class="usub">Manning HIQ-1250</div></td>
+            <td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td>
+            <td>Presse</td><td>Manning HIQ-1250 – 2019</td>
+            <td>162 hrs</td><td>MPR66368</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:75%;background:var(--yellow)"></div></div><div class="usub" style="margin-top:2px">75%</div></div></td>
+            <td><span class="badge b-yellow"><span class="bdot"></span>Bientôt Dû</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib">⋮</button></td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">290</div><div class="usub">Mig Welder Davidson</div></td>
+            <td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td>
+            <td>Soudeuse</td><td>Davidson K-5463-1 – 2020</td>
+            <td>179 hrs</td><td>46897901</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:110%;background:var(--red)"></div></div><div class="usub" style="margin-top:2px">110% – Dépassé</div></div></td>
+            <td><span class="badge b-red"><span class="bdot"></span>En Retard</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib">⋮</button></td>
+          </tr>
+          <tr onclick="openModal('m-detail')">
+            <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+            <td><div class="uid">GEN-01</div><div class="usub">Groupe Électrogène</div></td>
+            <td><span class="badge b-purple"><span class="bdot"></span>Est</span></td>
+            <td>Génératrice</td><td>Caterpillar XQ230 – 2018</td>
+            <td>3,402 hrs</td><td>CAT83884HY38D</td>
+            <td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:8%;background:var(--green)"></div></div><div class="usub" style="margin-top:2px">8% – OK</div></div></td>
+            <td><span class="badge b-green"><span class="bdot"></span>OK</span></td>
+            <td class="acell"><button class="ib" onclick="event.stopPropagation();openModal('m-detail')">📄</button><button class="ib">⋮</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ WORK ORDERS ══════ -->
+  <div id="page-workorders" class="page">
+    <div class="ph">
+      <div class="ph-title">📋 Ordres de Travail</div>
+      <div class="ph-actions">
+        <button class="btn outline sm">🖨 Imprimer</button>
+        <button class="btn outline sm">📤 Exporter</button>
+        <button class="btn blue" onclick="openModal('m-wo')">+ Nouvel OT</button>
+      </div>
+    </div>
+    <!-- WO Status tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="badge b-gray" style="padding:6px 12px;cursor:pointer;border-radius:var(--r);font-size:12px" onclick="filterWO('all',this)">Tous (8)</div>
+      <div class="badge b-green" style="padding:6px 12px;cursor:pointer;border-radius:var(--r);font-size:12px" onclick="filterWO('open',this)">Ouverts (1)</div>
+      <div class="badge b-blue" style="padding:6px 12px;cursor:pointer;border-radius:var(--r);font-size:12px" onclick="filterWO('progress',this)">En Cours (3)</div>
+      <div class="badge b-orange" style="padding:6px 12px;cursor:pointer;border-radius:var(--r);font-size:12px" onclick="filterWO('hold',this)">En Attente (1)</div>
+      <div class="badge b-purple" style="padding:6px 12px;cursor:pointer;border-radius:var(--r);font-size:12px" onclick="filterWO('done',this)">Terminés (3)</div>
+    </div>
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher OT..." oninput="filterTbl(this,'wo-tbl')"></div>
+        <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+        <select class="fsel"><option>Tous Techniciens</option><option>Boyce, Robert</option><option>Daniels, Roger</option></select>
+        <input type="date" class="fsel" style="width:auto">
+      </div>
+      <table id="wo-tbl">
+        <thead><tr><th><input type="checkbox"></th><th>OT #</th><th>Équipement</th><th>Dépôt</th><th>Type</th><th>Statut</th><th>Assigné</th><th>Dû</th><th>Pièces</th><th>Total</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox"></td><td><span class="uid">WO-2015</span></td><td><div class="uid">TK-01</div><div class="usub">Volvo FH 16</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td><span class="badge b-teal"><span class="bdot"></span>PM</span></td><td><span class="badge b-green"><span class="bdot"></span>Ouvert</span></td><td>Boyce, R.</td><td>2024-07-15</td><td>3 pièces</td><td>2 479 500 GNF</td><td class="acell"><button class="ib">✏</button><button class="ib">⋮</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><span class="uid">WO-2016</span></td><td><div class="uid">290</div><div class="usub">Mig Welder</div></td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td><span class="badge b-red"><span class="bdot"></span>Réparation</span></td><td><span class="badge b-blue"><span class="bdot"></span>En Cours</span></td><td>Daniels, R.</td><td>2024-07-10</td><td>1 pièce</td><td>1 348 500 GNF</td><td class="acell"><button class="ib">✏</button><button class="ib">⋮</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><span class="uid">WO-2017</span></td><td><div class="uid">224</div><div class="usub">HIQ-1250</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td><span class="badge b-teal"><span class="bdot"></span>PM</span></td><td><span class="badge b-orange"><span class="bdot"></span>En Attente</span></td><td>—</td><td>2024-07-20</td><td>0 pièces</td><td>0 GNF</td><td class="acell"><button class="ib">✏</button><button class="ib">⋮</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><span class="uid">WO-2018</span></td><td><div class="uid">TK-02</div><div class="usub">Actros</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td><span class="badge b-teal"><span class="bdot"></span>PM</span></td><td><span class="badge b-blue"><span class="bdot"></span>En Cours</span></td><td>Boyce, R.</td><td>2024-07-12</td><td>2 pièces</td><td>3 654 000 GNF</td><td class="acell"><button class="ib">✏</button><button class="ib">⋮</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ INSPECTIONS ══════ -->
+  <div id="page-inspections" class="page">
+    <div class="ph"><div class="ph-title">🔍 Inspections DOT / Quotidiennes</div>
+    <button class="btn blue" onclick="openModal('m-insp')">+ Nouvelle Inspection</button></div>
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher..."></div>
+        <select class="fsel"><option>Tous Dépôts</option></select>
+        <select class="fsel"><option>Tous Types</option><option>DOT</option><option>Quotidienne</option><option>Sécurité</option></select>
+      </div>
+      <table><thead><tr><th>Date</th><th>Équipement</th><th>Dépôt</th><th>Inspecteur</th><th>Type</th><th>Condition</th><th>Défauts</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>11/07/2024</td><td><div class="uid">TK-01</div><div class="usub">Volvo FH 16</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Boyce, Robert</td><td><span class="badge b-teal"><span class="bdot"></span>DOT</span></td><td><span class="badge b-green"><span class="bdot"></span>Bonne</span></td><td>0</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        <tr><td>10/07/2024</td><td><div class="uid">TK-02</div><div class="usub">Actros</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Daniels, Roger</td><td><span class="badge b-blue"><span class="bdot"></span>Quotidienne</span></td><td><span class="badge b-yellow"><span class="bdot"></span>Acceptable</span></td><td>2</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        <tr><td>09/07/2024</td><td><div class="uid">CH-03</div><div class="usub">Toyota Chariot</div></td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>Martin, Sophie</td><td><span class="badge b-purple"><span class="bdot"></span>Sécurité</span></td><td><span class="badge b-red"><span class="bdot"></span>Mauvaise</span></td><td>4</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ══════ TIRES ══════ -->
+  <div id="page-tires" class="page">
+    <div class="ph"><div class="ph-title">🛞 Gestion Pneumatiques</div><button class="btn blue">+ Enregistrer Remplacement</button></div>
+    <div class="card">
+      <table><thead><tr><th>Véhicule</th><th>Dépôt</th><th>Position</th><th>Marque/Modèle</th><th>Montage</th><th>Km Montage</th><th>Km Actuels</th><th>Usure</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><div class="uid">TK-01</div><div class="usub">Volvo FH 16</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Av. Droit</td><td>Michelin X Line</td><td>15/01/2024</td><td>36,000</td><td>42,180</td><td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:62%;background:var(--yellow)"></div></div><div class="usub">62%</div></div></td><td><span class="badge b-yellow"><span class="bdot"></span>Surveillance</span></td><td class="acell"><button class="ib">✏</button></td></tr>
+        <tr><td><div class="uid">TK-02</div><div class="usub">Actros</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Arr. Gauche</td><td>Bridgestone R168</td><td>20/03/2024</td><td>35,000</td><td>38,560</td><td><div class="pbar-wrap"><div class="pbar"><div class="pfill" style="width:36%;background:var(--green)"></div></div><div class="usub">36%</div></div></td><td><span class="badge b-green"><span class="bdot"></span>OK</span></td><td class="acell"><button class="ib">✏</button></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ══════ FUEL ══════ -->
+  <div id="page-fuel" class="page">
+    <div class="ph">
+      <div class="ph-title">⛽ Gestion Carburant</div>
+      <div class="ph-actions">
+        <select class="fsel"><option>Tous Dépôts</option><option>Dépôt Nord</option><option>Dépôt Sud</option><option>Dépôt Est</option></select>
+        <button class="btn outline sm">📤 Importer CSV Carte Carburant</button>
+        <button class="btn blue" onclick="openModal('m-fuel-tx')">+ Transaction</button>
+      </div>
+    </div>
+
+    <!-- Summary KPIs -->
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+      <div class="kpi"><div class="kpi-label">Consommation Ce Mois</div><div class="kpi-val" style="color:var(--teal)">990L</div><div class="kpi-sub">Tous dépôts</div></div>
+      <div class="kpi"><div class="kpi-label">Coût Total Carburant</div><div class="kpi-val" style="color:var(--yellow)">12 919 500 GNF</div><div class="kpi-sub">@ 13 050 GNF/L moy.</div></div>
+      <div class="kpi"><div class="kpi-label">Rendement Moyen</div><div class="kpi-val" style="color:var(--green)">8.4 L/100</div><div class="kpi-sub">Flotte totale</div></div>
+      <div class="kpi warn"><div class="kpi-label">Citerne Nord Niveau</div><div class="kpi-val" style="color:var(--orange)">28%</div><div class="kpi-sub"><span class="y">Réappro recommandée</span></div></div>
+    </div>
+
+    <!-- Fuel Tanks by Depot -->
+    <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">CITERNES PAR DÉPÔT</div>
+    <div class="fuel-grid">
+      <div class="fuel-tank">
+        <div class="tank-icon">🛢</div>
+        <div class="tank-info">
+          <div class="tank-name">Citerne Diesel Nord</div>
+          <div class="tank-loc">📍 Dépôt Nord — Montréal</div>
+          <div class="tank-level-bar"><div class="tank-fill" style="width:28%;background:var(--orange)"></div></div>
+          <div class="tank-stats">
+            <span><b style="color:var(--text)">280L</b> restants</span>
+            <span>Cap: <b style="color:var(--text)">1,000L</b></span>
+            <span>Diesel</span>
+          </div>
+        </div>
+        <button class="btn sm blue" onclick="openModal('m-fuel-fill')">+ Remplir</button>
+      </div>
+      <div class="fuel-tank">
+        <div class="tank-icon">🛢</div>
+        <div class="tank-info">
+          <div class="tank-name">Citerne Diesel Sud</div>
+          <div class="tank-loc">📍 Dépôt Sud — Québec</div>
+          <div class="tank-level-bar"><div class="tank-fill" style="width:65%;background:var(--green)"></div></div>
+          <div class="tank-stats">
+            <span><b style="color:var(--text)">650L</b> restants</span>
+            <span>Cap: <b style="color:var(--text)">1,000L</b></span>
+            <span>Diesel</span>
+          </div>
+        </div>
+        <button class="btn sm blue" onclick="openModal('m-fuel-fill')">+ Remplir</button>
+      </div>
+      <div class="fuel-tank">
+        <div class="tank-icon">🛢</div>
+        <div class="tank-info">
+          <div class="tank-name">Citerne Essence Est</div>
+          <div class="tank-loc">📍 Dépôt Est — Sherbrooke</div>
+          <div class="tank-level-bar"><div class="tank-fill" style="width:82%;background:var(--green2)"></div></div>
+          <div class="tank-stats">
+            <span><b style="color:var(--text)">410L</b> restants</span>
+            <span>Cap: <b style="color:var(--text)">500L</b></span>
+            <span>Essence</span>
+          </div>
+        </div>
+        <button class="btn sm blue" onclick="openModal('m-fuel-fill')">+ Remplir</button>
+      </div>
+      <div class="fuel-tank">
+        <div class="tank-icon">🛢</div>
+        <div class="tank-info">
+          <div class="tank-name">Citerne DEF Nord</div>
+          <div class="tank-loc">📍 Dépôt Nord — Montréal</div>
+          <div class="tank-level-bar"><div class="tank-fill" style="width:91%;background:var(--teal)"></div></div>
+          <div class="tank-stats">
+            <span><b style="color:var(--text)">91L</b> restants</span>
+            <span>Cap: <b style="color:var(--text)">100L</b></span>
+            <span>DEF/AdBlue</span>
+          </div>
+        </div>
+        <button class="btn sm blue" onclick="openModal('m-fuel-fill')">+ Remplir</button>
+      </div>
+    </div>
+
+    <!-- Fuel Transactions Table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📋 Transactions Carburant</div>
+        <div class="srch" style="margin-left:auto"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher..."></div>
+        <select class="fsel"><option>Tous Véhicules</option><option>TK-01</option><option>TK-02</option></select>
+        <select class="fsel"><option>Toutes Citernes</option><option>Nord Diesel</option><option>Sud Diesel</option></select>
+      </div>
+      <table>
+        <thead><tr><th>Date</th><th>Véhicule</th><th>Dépôt/Citerne</th><th>Type</th><th>Quantité</th><th>Prix/L</th><th>Total</th><th>Km/Hrs</th><th>Rendement</th><th>Employé</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td>11/07/2024</td><td><div class="uid">TK-01</div><div class="usub">Volvo FH 16</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord – Diesel</span></td><td>Diesel</td><td>80L</td><td>13 224 GNF</td><td>1 057 920 GNF</td><td>42,180 km</td><td>8.1 L/100</td><td>Boyce, R.</td><td class="acell"><button class="ib">✏</button><button class="ib danger">🗑</button></td></tr>
+          <tr><td>10/07/2024</td><td><div class="uid">TK-02</div><div class="usub">Actros</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord – Diesel</span></td><td>Diesel</td><td>95L</td><td>13 224 GNF</td><td>1 256 280 GNF</td><td>38,560 km</td><td>8.7 L/100</td><td>Daniels, R.</td><td class="acell"><button class="ib">✏</button><button class="ib danger">🗑</button></td></tr>
+          <tr><td>09/07/2024</td><td><div class="uid">GEN-01</div><div class="usub">Caterpillar XQ230</div></td><td><span class="badge b-purple"><span class="bdot"></span>Est – Diesel</span></td><td>Diesel</td><td>45L</td><td>12 876 GNF</td><td>579 420 GNF</td><td>3,402 hrs</td><td>13.2 L/h</td><td>Martin, S.</td><td class="acell"><button class="ib">✏</button><button class="ib danger">🗑</button></td></tr>
+          <tr><td>08/07/2024</td><td><div class="uid">CH-03</div><div class="usub">Toyota Chariot</div></td><td><span class="badge b-teal"><span class="bdot"></span>Sud – Diesel</span></td><td>Diesel</td><td>25L</td><td>13 050 GNF</td><td>326 250 GNF</td><td>1,890 hrs</td><td>3.8 L/h</td><td>Daniels, R.</td><td class="acell"><button class="ib">✏</button><button class="ib danger">🗑</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ FUEL TANKS ══════ -->
+  <div id="page-fuel-tanks" class="page">
+    <div class="ph"><div class="ph-title">🛢 Citernes & Ravitaillement</div><button class="btn blue" onclick="openModal('m-fuel-fill')">+ Remplissage Citerne</button></div>
+    <div class="depot-grid">
+      <div class="depot-card" onclick="openModal('m-fuel-detail')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="font-size:24px">🛢</div>
+          <div>
+            <div class="depot-name">Citerne Diesel Nord</div>
+            <div class="depot-addr">📍 Dépôt Nord — Montréal</div>
+          </div>
+          <span class="badge b-orange" style="margin-left:auto"><span class="bdot"></span>Bas</span>
+        </div>
+        <div class="tank-level-bar"><div class="tank-fill" style="width:28%;background:var(--orange)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px">
+          <span>280L restants</span><span>Capacité: 1,000L</span>
+        </div>
+        <div class="depot-stats" style="margin-top:10px">
+          <div class="ds"><div class="ds-val" style="color:var(--orange)">28%</div><div class="ds-label">Niveau</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">80L</div><div class="ds-label">Moy/jour</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--red)">3 jrs</div><div class="ds-label">Autonomie</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--text)">13 224 GNF</div><div class="ds-label">Prix/L</div></div>
+        </div>
+      </div>
+      <div class="depot-card" onclick="openModal('m-fuel-detail')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="font-size:24px">🛢</div>
+          <div><div class="depot-name">Citerne Diesel Sud</div><div class="depot-addr">📍 Dépôt Sud — Québec</div></div>
+          <span class="badge b-green" style="margin-left:auto"><span class="bdot"></span>OK</span>
+        </div>
+        <div class="tank-level-bar"><div class="tank-fill" style="width:65%;background:var(--green)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>650L restants</span><span>Capacité: 1,000L</span></div>
+        <div class="depot-stats" style="margin-top:10px">
+          <div class="ds"><div class="ds-val" style="color:var(--green)">65%</div><div class="ds-label">Niveau</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">60L</div><div class="ds-label">Moy/jour</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--green)">10 jrs</div><div class="ds-label">Autonomie</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--text)">13 050 GNF</div><div class="ds-label">Prix/L</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ INVENTORY ══════ -->
+  <div id="page-inventory" class="page">
+    <div class="ph">
+      <div class="ph-title">📦 Inventaire — Pièces</div>
+      <div class="ph-actions">
+        <button class="btn outline sm">📦 Recevoir Stock</button>
+        <button class="btn outline sm">📊 Inventaire Physique</button>
+        <button class="btn blue" onclick="openModal('m-part')">+ Nouvelle Pièce</button>
+      </div>
+    </div>
+    <!-- Depot stock summary -->
+    <div class="depot-grid" style="margin-bottom:14px">
+      <div class="depot-card active-depot">
+        <div class="depot-name">📦 Entrepôt Nord – Montréal</div>
+        <div class="depot-addr">245 réf. · 3 critiques</div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--text)">245</div><div class="ds-label">Références</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--red)">1</div><div class="ds-label">Rupture</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--yellow)">2</div><div class="ds-label">Stock Bas</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">160 254 000 GNF</div><div class="ds-label">Valeur</div></div>
+        </div>
+      </div>
+      <div class="depot-card">
+        <div class="depot-name">📦 Entrepôt Sud – Québec</div>
+        <div class="depot-addr">128 réf. · 1 critique</div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--text)">128</div><div class="ds-label">Références</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--red)">0</div><div class="ds-label">Rupture</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--yellow)">1</div><div class="ds-label">Stock Bas</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">80 475 000 GNF</div><div class="ds-label">Valeur</div></div>
+        </div>
+      </div>
+      <div class="depot-card">
+        <div class="depot-name">📦 Entrepôt Est – Sherbrooke</div>
+        <div class="depot-addr">87 réf. · OK</div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--text)">87</div><div class="ds-label">Références</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--green)">0</div><div class="ds-label">Rupture</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--green)">0</div><div class="ds-label">Stock Bas</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">53 766 000 GNF</div><div class="ds-label">Valeur</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher pièce, réf..." oninput="filterTbl(this,'inv-tbl')"></div>
+        <select class="fsel" id="depot-filter-inv" onchange="filterByDepotInv(this.value)">
+          <option value="">Tous Entrepôts</option>
+          <option value="Nord">Entrepôt Nord</option>
+          <option value="Sud">Entrepôt Sud</option>
+          <option value="Est">Entrepôt Est</option>
+        </select>
+        <select class="fsel"><option>Toutes Catégories</option><option>Filtres</option><option>Lubrifiants</option><option>Courroies</option><option>Hydraulique</option><option>Électrique</option><option>Pneumatiques</option></select>
+        <select class="fsel"><option>Tous Statuts</option><option>Rupture</option><option>Stock Bas</option><option>En Stock</option></select>
+        <div style="margin-left:auto;display:flex;gap:5px">
+          <button class="btn sm outline">📤 Exporter</button>
+          <button class="btn sm outline">🔁 Transfert Entre Dépôts</button>
+        </div>
+      </div>
+      <table id="inv-tbl">
+        <thead><tr><th><input type="checkbox"></th><th>Réf. Pièce</th><th>Description</th><th>Catégorie</th><th>Entrepôt</th><th>Qté</th><th>Point Réappro</th><th>Coût Unit.</th><th>Valeur Stock</th><th>Fournisseur</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox"></td><td class="uid">HYD-SEAL-88</td><td>Joint Hydraulique #88</td><td><span class="badge b-teal"><span class="bdot"></span>Hydraulique</span></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td style="color:var(--red);font-weight:700">0</td><td>3</td><td>132 240 GNF</td><td>0 GNF</td><td>McMaster-Carr</td><td><span class="badge b-red"><span class="bdot"></span>Rupture</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib" onclick="openModal('m-po')">🛒</button></td></tr>
+          <tr><td><input type="checkbox"></td><td class="uid">PR19026445</td><td>Filtre à Air (Compresseurs)</td><td><span class="badge b-gray"><span class="bdot"></span>Filtres</span></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td style="color:var(--yellow);font-weight:700">10</td><td>15</td><td>36 975 GNF</td><td>42.50 GNF</td><td>Grainger</td><td><span class="badge b-yellow"><span class="bdot"></span>Stock Bas</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib" onclick="openModal('m-po')">🛒</button></td></tr>
+          <tr><td><input type="checkbox"></td><td class="uid">BG-3381</td><td>Vanne à Bille 6"</td><td><span class="badge b-blue"><span class="bdot"></span>Plomberie</span></td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td style="color:var(--yellow);font-weight:700">1</td><td>2</td><td>247 950 GNF</td><td>247 950 GNF</td><td>McMaster-Carr</td><td><span class="badge b-yellow"><span class="bdot"></span>Stock Bas</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🛒</button></td></tr>
+          <tr><td><input type="checkbox"></td><td class="uid">OIL-5W30</td><td>Huile Moteur 5W-30 (4L)</td><td><span class="badge b-purple"><span class="bdot"></span>Lubrifiants</span></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>24</td><td>10</td><td>113 013 GNF</td><td>2 712 312 GNF</td><td>Pièces Express</td><td><span class="badge b-green"><span class="bdot"></span>En Stock</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🛒</button></td></tr>
+          <tr><td><input type="checkbox"></td><td class="uid">FLT-OIL-V</td><td>Filtre à Huile Volvo FH</td><td><span class="badge b-gray"><span class="bdot"></span>Filtres</span></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>6</td><td>4</td><td>195 750 GNF</td><td>1 174 500 GNF</td><td>Volvo Parts</td><td><span class="badge b-green"><span class="bdot"></span>En Stock</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🛒</button></td></tr>
+          <tr><td><input type="checkbox"></td><td class="uid">BLT-V42</td><td>Courroie V #42</td><td><span class="badge b-orange"><span class="bdot"></span>Courroies</span></td><td><span class="badge b-purple"><span class="bdot"></span>Est</span></td><td>6</td><td>5</td><td>76 125 GNF</td><td>456 750 GNF</td><td>Grainger</td><td><span class="badge b-green"><span class="bdot"></span>En Stock</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🛒</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ DEPOTS ══════ -->
+  <div id="page-depots" class="page">
+    <div class="ph"><div class="ph-title">🏭 Dépôts & Emplacements</div><button class="btn blue" onclick="openModal('m-depot')">+ Nouveau Dépôt</button></div>
+    <div class="depot-grid">
+      <div class="depot-card" onclick="openModal('m-depot-detail')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="font-size:28px">🏭</div>
+          <div><div class="depot-name">Dépôt Nord — Montréal</div><div class="depot-addr">1234 Rue Industrielle, Montréal QC</div></div>
+        </div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--blue)">12</div><div class="ds-label">Équipements</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--yellow)">3</div><div class="ds-label">OT Actifs</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">245</div><div class="ds-label">Pièces</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--orange)">28%</div><div class="ds-label">Carburant</div></div>
+        </div>
+      </div>
+      <div class="depot-card" onclick="openModal('m-depot-detail')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="font-size:28px">🏭</div>
+          <div><div class="depot-name">Dépôt Sud — Québec</div><div class="depot-addr">567 Blvd Lafleur, Québec QC</div></div>
+        </div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--blue)">8</div><div class="ds-label">Équipements</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--yellow)">2</div><div class="ds-label">OT Actifs</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">128</div><div class="ds-label">Pièces</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--green)">65%</div><div class="ds-label">Carburant</div></div>
+        </div>
+      </div>
+      <div class="depot-card" onclick="openModal('m-depot-detail')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="font-size:28px">🏭</div>
+          <div><div class="depot-name">Dépôt Est — Sherbrooke</div><div class="depot-addr">89 Ave Commerce, Sherbrooke QC</div></div>
+        </div>
+        <div class="depot-stats">
+          <div class="ds"><div class="ds-val" style="color:var(--blue)">5</div><div class="ds-label">Équipements</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--yellow)">0</div><div class="ds-label">OT Actifs</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--teal)">87</div><div class="ds-label">Pièces</div></div>
+          <div class="ds"><div class="ds-val" style="color:var(--green)">82%</div><div class="ds-label">Carburant</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PURCHASING ══════ -->
+  <div id="page-purchasing" class="page">
+    <div class="ph"><div class="ph-title">🛒 Bons de Commande</div><button class="btn blue" onclick="openModal('m-po')">+ Nouveau BC</button></div>
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher BC..."></div>
+        <select class="fsel"><option>Tous Statuts</option><option>Réquisition</option><option>Approuvé</option><option>Envoyé</option><option>Reçu Partiel</option><option>Reçu</option><option>Annulé</option></select>
+        <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+        <select class="fsel"><option>Tous Fournisseurs</option><option>McMaster-Carr</option><option>Grainger</option></select>
+      </div>
+      <table><thead><tr><th><input type="checkbox"></th><th>BC #</th><th>Fournisseur</th><th>Dépôt Dest.</th><th>Date Commande</th><th>Date Livraison</th><th>Statut</th><th>Lignes</th><th>Total HT</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><input type="checkbox"></td><td class="uid">PO-121</td><td>McMaster-Carr</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>28/06/2024</td><td>05/07/2024</td><td><span class="badge b-yellow"><span class="bdot"></span>Réquisition</span></td><td>3 lignes</td><td>2 136 720 GNF</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🖨</button></td></tr>
+        <tr><td><input type="checkbox"></td><td class="uid">PO-122</td><td>Grainger Industrial</td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>01/07/2024</td><td>08/07/2024</td><td><span class="badge b-blue"><span class="bdot"></span>Envoyé</span></td><td>5 lignes</td><td>11 136 000 GNF</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🖨</button></td></tr>
+        <tr><td><input type="checkbox"></td><td class="uid">PO-123</td><td>Volvo Parts Canada</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>05/07/2024</td><td>12/07/2024</td><td><span class="badge b-teal"><span class="bdot"></span>Reçu Partiel</span></td><td>2 lignes</td><td>5 046 000 GNF</td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button><button class="ib">🖨</button></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ══════ EMPLOYEES ══════ -->
+  <div id="page-employees" class="page">
+    <div class="ph"><div class="ph-title">👤 Employés / Techniciens</div><button class="btn blue" onclick="openModal('m-employee')">+ Nouvel Employé</button></div>
+    <div class="card">
+      <div class="filter-bar">
+        <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher..." oninput="filterTbl(this,'emp-tbl')"></div>
+        <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+        <select class="fsel"><option>Tous Postes</option><option>Technicien</option><option>Mécanicien</option><option>Superviseur</option></select>
+      </div>
+      <table id="emp-tbl">
+        <thead><tr><th><input type="checkbox"></th><th>Employé</th><th>Dépôt</th><th>Poste</th><th>Taux/h</th><th>OT Assignés</th><th>Statut</th><th>Renouvellements</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox"></td><td><div class="uid">Boyce, Robert</div><div class="usub">RB001</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Technicien Senior</td><td>365 400 GNF/h</td><td>2</td><td><span class="badge b-green"><span class="bdot"></span>Actif</span></td><td><span class="badge b-green"><span class="bdot"></span>À Jour</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><div class="uid">Daniels, Roger</div><div class="usub">RD002</div></td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>Mécanicien</td><td>304 500 GNF/h</td><td>1</td><td><span class="badge b-green"><span class="bdot"></span>Actif</span></td><td><span class="badge b-red"><span class="bdot"></span>Expiré</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><div class="uid">Martin, Sophie</div><div class="usub">SM003</div></td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Superviseur</td><td>478 500 GNF/h</td><td>0</td><td><span class="badge b-green"><span class="bdot"></span>Actif</span></td><td><span class="badge b-yellow"><span class="bdot"></span>Bientôt Dû</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+          <tr><td><input type="checkbox"></td><td><div class="uid">Tremblay, Jean</div><div class="usub">JT004</div></td><td><span class="badge b-purple"><span class="bdot"></span>Est</span></td><td>Technicien</td><td>330 600 GNF/h</td><td>0</td><td><span class="badge b-green"><span class="bdot"></span>Actif</span></td><td><span class="badge b-green"><span class="bdot"></span>À Jour</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ VENDORS ══════ -->
+  <div id="page-vendors" class="page">
+    <div class="ph"><div class="ph-title">🏢 Fournisseurs</div><button class="btn blue" onclick="openModal('m-vendor')">+ Nouveau Fournisseur</button></div>
+    <div class="card">
+      <div class="filter-bar"><div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher fournisseur..."></div></div>
+      <table><thead><tr><th>#</th><th>Nom</th><th>Ville</th><th>Téléphone</th><th>Email</th><th>Types Produits</th><th>Dépôts Desservis</th><th>Actif</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td class="uid">V001</td><td><b>McMaster-Carr</b></td><td>Atlanta, GA</td><td>555-0100</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59362b3d3c2b2a19343a34382a2d3c2b773a3634">[email&#160;protected]</a></td><td><span class="badge b-gray"><span class="bdot"></span>Pièces Méca.</span></td><td>Nord, Sud</td><td><span class="badge b-green"><span class="bdot"></span>Oui</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        <tr><td class="uid">V002</td><td><b>Grainger Industrial</b></td><td>Montréal, QC</td><td>555-0200</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ea898baa8d988b83848d8f98c4898587">[email&#160;protected]</a></td><td><span class="badge b-blue"><span class="bdot"></span>Outillage</span></td><td>Tous</td><td><span class="badge b-green"><span class="bdot"></span>Oui</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        <tr><td class="uid">V003</td><td><b>Atelier Diesel Nord</b></td><td>Laval, QC</td><td>555-0300</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="caa3a4aca58aaea3afb9afa6e7a4a5b8aee4a9ab">[email&#160;protected]</a></td><td><span class="badge b-orange"><span class="bdot"></span>Service</span></td><td>Nord</td><td><span class="badge b-green"><span class="bdot"></span>Oui</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+        <tr><td class="uid">V004</td><td><b>Volvo Parts Canada</b></td><td>Québec, QC</td><td>555-0400</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aadacbd8ded9eadcc5c6dcc584c9cb">[email&#160;protected]</a></td><td><span class="badge b-blue"><span class="bdot"></span>Pièces OEM</span></td><td>Nord, Est</td><td><span class="badge b-green"><span class="bdot"></span>Oui</span></td><td class="acell"><button class="ib">📄</button><button class="ib">✏</button></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ══════ USERS ══════ -->
+  <div id="page-users" class="page">
+    <div class="ph"><div class="ph-title">👥 Gestion Utilisateurs & Droits</div><button class="btn blue" onclick="openModal('m-user')">+ Nouvel Utilisateur</button></div>
+    <div class="card">
+      <div class="user-row" style="background:var(--bg3)">
+        <div class="u-avatar" style="background:#7c3aed">AP</div>
+        <div class="u-info"><div class="u-name">Admin Principal</div><div class="u-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d4c494044436d4b414848594e425f5d034e4c">[email&#160;protected]</a> · Dépôt Nord</div></div>
+        <span class="role-chip role-admin">Administrateur</span>
+        <div style="margin-left:auto">
+          <span class="badge b-green"><span class="bdot"></span>En ligne</span>
+        </div>
+        <div class="u-actions"><button class="ib">✏</button><button class="ib">⚙</button></div>
+      </div>
+      <div class="user-row">
+        <div class="u-avatar" style="background:#2563eb">RB</div>
+        <div class="u-info"><div class="u-name">Boyce, Robert</div><div class="u-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81f3eee3e4f3f5afe3eef8e2e4c1e7ede4e4f5e2eef3f1afe2e0">[email&#160;protected]</a> · Dépôt Nord</div></div>
+        <span class="role-chip role-tech">Technicien</span>
+        <div style="margin-left:auto"><span class="badge b-green"><span class="bdot"></span>En ligne</span></div>
+        <div class="u-actions"><button class="ib">✏</button><button class="ib">⚙</button></div>
+      </div>
+      <div class="user-row">
+        <div class="u-avatar" style="background:#059669">SM</div>
+        <div class="u-info"><div class="u-name">Martin, Sophie</div><div class="u-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="562539263e3f33783b3724223f3816303a33332235392426783537">[email&#160;protected]</a> · Tous Dépôts</div></div>
+        <span class="role-chip role-manager">Responsable</span>
+        <div style="margin-left:auto"><span class="badge b-gray"><span class="bdot"></span>Hors ligne</span></div>
+        <div class="u-actions"><button class="ib">✏</button><button class="ib">⚙</button></div>
+      </div>
+      <div class="user-row">
+        <div class="u-avatar" style="background:#0891b2">RD</div>
+        <div class="u-info"><div class="u-name">Daniels, Roger</div><div class="u-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3819c949681dd97929d9a969f80b3959f969687909c8183dd9092">[email&#160;protected]</a> · Dépôt Sud</div></div>
+        <span class="role-chip role-tech">Technicien</span>
+        <div style="margin-left:auto"><span class="badge b-green"><span class="bdot"></span>En ligne</span></div>
+        <div class="u-actions"><button class="ib">✏</button><button class="ib">⚙</button></div>
+      </div>
+      <div class="user-row">
+        <div class="u-avatar" style="background:#78716c">JT</div>
+        <div class="u-info"><div class="u-name">Tremblay, Jean</div><div class="u-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="620807030c4c1610070f000e031b22040e070716010d10124c0103">[email&#160;protected]</a> · Dépôt Est</div></div>
+        <span class="role-chip role-viewer">Lecteur</span>
+        <div style="margin-left:auto"><span class="badge b-gray"><span class="bdot"></span>Hors ligne</span></div>
+        <div class="u-actions"><button class="ib">✏</button><button class="ib">⚙</button></div>
+      </div>
+    </div>
+    <!-- Permission Matrix -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-header"><div class="card-title">🔐 Matrice des Permissions</div></div>
+      <table>
+        <thead><tr><th>Module</th><th>Admin</th><th>Responsable</th><th>Technicien</th><th>Lecteur</th></tr></thead>
+        <tbody>
+          <tr><td><b>Équipements</b></td><td>✅ Tout</td><td>✅ Tout</td><td>✏ Modifier</td><td>👁 Voir</td></tr>
+          <tr><td><b>Ordres de Travail</b></td><td>✅ Tout</td><td>✅ Tout</td><td>✏ Gérer (assigned)</td><td>👁 Voir</td></tr>
+          <tr><td><b>Carburant</b></td><td>✅ Tout</td><td>✅ Tout</td><td>➕ Saisir tx</td><td>👁 Voir</td></tr>
+          <tr><td><b>Inventaire</b></td><td>✅ Tout</td><td>✅ Tout</td><td>👁 Voir / Utiliser</td><td>👁 Voir</td></tr>
+          <tr><td><b>Achats</b></td><td>✅ Tout</td><td>✅ Approuver</td><td>➕ Réquisition</td><td>❌</td></tr>
+          <tr><td><b>Utilisateurs</b></td><td>✅ Tout</td><td>❌</td><td>❌</td><td>❌</td></tr>
+          <tr><td><b>Rapports</b></td><td>✅ Tout</td><td>✅ Tout</td><td>📋 Limités</td><td>📋 Limités</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ CALENDAR ══════ -->
+  <div id="page-calendar" class="page">
+    <div class="ph">
+      <div class="ph-title">📅 Calendrier de Maintenance</div>
+      <div class="ph-actions">
+        <button class="btn outline sm" onclick="prevMonth()">◀</button>
+        <span id="cal-month-label" style="font-weight:600;font-size:14px;padding:0 8px">Juillet 2024</span>
+        <button class="btn outline sm" onclick="nextMonth()">▶</button>
+        <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:10px;font-size:11px;flex-wrap:wrap">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--yellow);border-radius:2px;margin-right:4px"></span>PM Préventif</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:2px;margin-right:4px"></span>Ordre de Travail</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:4px"></span>Réparation</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--teal);border-radius:2px;margin-right:4px"></span>Carburant</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--purple);border-radius:2px;margin-right:4px"></span>Inspection</span>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-dn">Dim</div><div class="cal-dn">Lun</div><div class="cal-dn">Mar</div><div class="cal-dn">Mer</div><div class="cal-dn">Jeu</div><div class="cal-dn">Ven</div><div class="cal-dn">Sam</div>
+      <div class="cal-day other-m"><div class="dn">30</div></div>
+      <div class="cal-day other-m"><div class="dn">1</div></div>
+      <div class="cal-day has-ev"><div class="dn">2</div><div class="ev-pill ep-pm">PM – 224</div></div>
+      <div class="cal-day"><div class="dn">3</div></div>
+      <div class="cal-day"><div class="dn">4</div></div>
+      <div class="cal-day has-ev"><div class="dn">5</div><div class="ev-pill ep-wo">OT WO-2015</div><div class="ev-pill ep-fuel">Carburant TK-01</div></div>
+      <div class="cal-day"><div class="dn">6</div></div>
+      <div class="cal-day has-ev"><div class="dn">7</div><div class="ev-pill ep-insp">Insp. DOT TK-02</div></div>
+      <div class="cal-day has-ev"><div class="dn">8</div><div class="ev-pill ep-rep">Répar – 290</div></div>
+      <div class="cal-day"><div class="dn">9</div></div>
+      <div class="cal-day has-ev"><div class="dn">10</div><div class="ev-pill ep-pm">PM – AC-1</div><div class="ev-pill ep-fuel">Carburant TK-02</div></div>
+      <div class="cal-day today"><div class="dn" style="color:var(--blue)">11</div><div class="ev-pill ep-wo">OT WO-2016</div></div>
+      <div class="cal-day"><div class="dn">12</div></div>
+      <div class="cal-day"><div class="dn">13</div></div>
+      <div class="cal-day has-ev"><div class="dn">14</div><div class="ev-pill ep-pm">PM – GEN-01</div></div>
+      <div class="cal-day has-ev"><div class="dn">15</div><div class="ev-pill ep-wo">OT WO-2018</div></div>
+      <div class="cal-day"><div class="dn">16</div></div>
+      <div class="cal-day"><div class="dn">17</div></div>
+      <div class="cal-day has-ev"><div class="dn">18</div><div class="ev-pill ep-insp">Insp. CH-03</div></div>
+      <div class="cal-day"><div class="dn">19</div></div>
+      <div class="cal-day has-ev"><div class="dn">20</div><div class="ev-pill ep-pm">PM – TK-01</div></div>
+      <div class="cal-day"><div class="dn">21</div></div>
+      <div class="cal-day has-ev"><div class="dn">22</div><div class="ev-pill ep-rep">Répar – FE</div></div>
+      <div class="cal-day"><div class="dn">23</div></div>
+      <div class="cal-day"><div class="dn">24</div></div>
+      <div class="cal-day has-ev"><div class="dn">25</div><div class="ev-pill ep-wo">OT WO-2017</div></div>
+      <div class="cal-day"><div class="dn">26</div></div>
+      <div class="cal-day"><div class="dn">27</div></div>
+      <div class="cal-day"><div class="dn">28</div></div>
+      <div class="cal-day"><div class="dn">29</div></div>
+      <div class="cal-day has-ev"><div class="dn">30</div><div class="ev-pill ep-fuel">Carburant – Nord</div></div>
+      <div class="cal-day"><div class="dn">31</div></div>
+      <div class="cal-day other-m"><div class="dn">1</div></div>
+      <div class="cal-day other-m"><div class="dn">2</div></div>
+      <div class="cal-day other-m"><div class="dn">3</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ REPORTS ══════ -->
+  <div id="page-reports" class="page">
+    <div class="ph"><div class="ph-title">📊 Rapports</div></div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:14px">
+      <div class="card" style="padding:10px">
+        <div class="rep-tree">
+          <div class="rg-title">▼ 👤 Employés</div>
+          <div class="ri" onclick="loadRep(this,'Employés – Liste')">Liste Employés</div>
+          <div class="ri" onclick="loadRep(this,'Renouvellements')">Renouvellements</div>
+          <div class="rg-title">▼ ⚙ Équipements</div>
+          <div class="ri active" onclick="loadRep(this,'Liste Équipements')">Liste Équipements</div>
+          <div class="ri" onclick="loadRep(this,'Historique Maintenance')">Historique Maintenance</div>
+          <div class="ri" onclick="loadRep(this,'Coûts par Équipement')">Coûts par Équipement</div>
+          <div class="ri" onclick="loadRep(this,'Temps d\'Arrêt')">Temps d'Arrêt</div>
+          <div class="ri" onclick="loadRep(this,'Utilisation')">Utilisation</div>
+          <div class="ri" onclick="loadRep(this,'Notifications PM')">Notifications PM</div>
+          <div class="rg-title">▼ ⛽ Carburant</div>
+          <div class="ri" onclick="loadRep(this,'Transactions Carburant')">Transactions</div>
+          <div class="ri" onclick="loadRep(this,'Rendement Carburant')">Rendement</div>
+          <div class="ri" onclick="loadRep(this,'Coûts Carburant par Dépôt')">Coûts par Dépôt</div>
+          <div class="ri" onclick="loadRep(this,'Niveaux Citernes')">Niveaux Citernes</div>
+          <div class="rg-title">▼ 📦 Inventaire</div>
+          <div class="ri" onclick="loadRep(this,'Liste Inventaire')">Liste Inventaire</div>
+          <div class="ri" onclick="loadRep(this,'Inventaire Réappro')">Réapprovisionnement</div>
+          <div class="ri" onclick="loadRep(this,'Utilisation Inventaire')">Utilisation</div>
+          <div class="ri" onclick="loadRep(this,'Inventaire par Dépôt')">Par Dépôt</div>
+          <div class="rg-title">▼ 📋 Ordres de Travail</div>
+          <div class="ri" onclick="loadRep(this,'Résumé OT')">Résumé OT</div>
+          <div class="ri" onclick="loadRep(this,'OT Détaillés')">OT Détaillés</div>
+          <div class="ri" onclick="loadRep(this,'Coûts Main d\'Œuvre')">Coûts Main d'Œuvre</div>
+          <div class="rg-title">▼ 🛒 Achats</div>
+          <div class="ri" onclick="loadRep(this,'Bons de Commande')">Bons de Commande</div>
+          <div class="rg-title">▼ 🛞 Pneumatiques</div>
+          <div class="ri" onclick="loadRep(this,'Historique Pneus')">Historique Pneus</div>
+          <div class="ri" onclick="loadRep(this,'Coûts Pneus')">Coûts Pneus</div>
+        </div>
+      </div>
+      <div class="chart-card" id="rep-preview">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <div id="rep-title" style="font-size:15px;font-weight:700">Liste Équipements</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+            <select class="fsel"><option>Toutes Dates</option><option>Ce mois</option><option>Trimestre</option><option>Année</option></select>
+            <button class="btn sm blue">🔄 Actualiser</button>
+            <button class="btn sm outline">🖨 Imprimer</button>
+            <button class="btn sm outline">💾 PDF</button>
+            <button class="btn sm outline">📊 CSV</button>
+          </div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px">
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px" id="rep-subtitle">Rapport: Liste Équipements</div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:12px">FleetCorp SA · Tous Dépôts · 11 Juillet 2024</div>
+          <table>
+            <thead><tr><th>N° Unité</th><th>Description</th><th>Dépôt</th><th>Type</th><th>Marque</th><th>Heures</th><th>N° Série</th><th>Statut PM</th></tr></thead>
+            <tbody>
+              <tr><td class="uid">TK-01</td><td>Volvo FH 16</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Camion</td><td>Volvo</td><td>42,180</td><td>VH83884HY38D</td><td><span class="badge b-red"><span class="bdot"></span>En Retard</span></td></tr>
+              <tr><td class="uid">TK-02</td><td>Actros</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>Camion</td><td>Mercedes</td><td>38,560</td><td>ME39847520</td><td><span class="badge b-green"><span class="bdot"></span>OK</span></td></tr>
+              <tr><td class="uid">CH-03</td><td>Toyota 5FBE15</td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>Chariot</td><td>Toyota</td><td>1,890</td><td>5FM212-76H871</td><td><span class="badge b-yellow"><span class="bdot"></span>Bientôt</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ACTIVITY ══════ -->
+  <div id="page-activity" class="page">
+    <div class="ph">
+      <div class="ph-title">📡 Activité en Temps Réel</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge b-green"><span class="bdot" style="animation:pulse 1s infinite"></span>4 utilisateurs en ligne</span>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="cc-title">👥 Utilisateurs Connectés</div>
+        <div class="user-row" style="background:rgba(34,211,160,.06);border-radius:var(--r)">
+          <div class="u-avatar" style="background:#7c3aed">AP</div>
+          <div class="u-info"><div class="u-name">Admin Principal</div><div class="u-role">Tableau de bord · Dépôt Nord</div></div>
+          <span class="badge b-green"><span class="bdot"></span>En ligne</span>
+        </div>
+        <div class="user-row">
+          <div class="u-avatar" style="background:#2563eb">RB</div>
+          <div class="u-info"><div class="u-name">Boyce, Robert</div><div class="u-role">Ordre WO-2015 · Dépôt Nord</div></div>
+          <span class="badge b-green"><span class="bdot"></span>En ligne</span>
+        </div>
+        <div class="user-row">
+          <div class="u-avatar" style="background:#0891b2">RD</div>
+          <div class="u-info"><div class="u-name">Daniels, Roger</div><div class="u-role">Carburant TK-02 · Dépôt Sud</div></div>
+          <span class="badge b-green"><span class="bdot"></span>En ligne</span>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">🔔 Alertes Temps Réel</div>
+        <div class="notif-item unread"><div class="ni-title">⚠ TK-01 — PM Dépassé (Vidange)</div><div class="ni-sub">Dépôt Nord · 1,180 km de retard</div><div class="ni-time">Il y a 2 minutes</div></div>
+        <div class="notif-item unread"><div class="ni-title">⛽ Citerne Nord — Niveau Critique</div><div class="ni-sub">280L restants (28%) · Réappro requise</div><div class="ni-time">Il y a 15 minutes</div></div>
+        <div class="notif-item"><div class="ni-title">📦 Rupture Stock — HYD-SEAL-88</div><div class="ni-sub">Joint Hydraulique #88 · Entrepôt Nord</div><div class="ni-time">Il y a 1 heure</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 Flux d'Activité Récent</div></div>
+      <div class="activity-feed" style="padding:6px">
+        <div class="af-item"><div class="af-icon" style="background:rgba(59,130,246,.15)">📋</div><div class="af-content"><div class="af-msg"><strong>Boyce, Robert</strong> a ouvert l'OT WO-2015 (TK-01 Volvo FH 16)</div><div class="af-user">Dépôt Nord</div><div class="af-time">Il y a 5 min</div></div></div>
+        <div class="af-item"><div class="af-icon" style="background:rgba(45,212,191,.15)">⛽</div><div class="af-content"><div class="af-msg"><strong>Daniels, Roger</strong> a enregistré 95L de diesel pour TK-02</div><div class="af-user">Dépôt Sud</div><div class="af-time">Il y a 12 min</div></div></div>
+        <div class="af-item"><div class="af-icon" style="background:rgba(167,139,250,.15)">🔍</div><div class="af-content"><div class="af-msg"><strong>Martin, Sophie</strong> a complété l'inspection DOT de TK-01</div><div class="af-user">Dépôt Nord</div><div class="af-time">Il y a 45 min</div></div></div>
+        <div class="af-item"><div class="af-icon" style="background:rgba(244,63,94,.15)">⚠</div><div class="af-content"><div class="af-msg">Alerte: Joint Hydraulique HYD-SEAL-88 en rupture de stock</div><div class="af-user">Système</div><div class="af-time">Il y a 1h</div></div></div>
+        <div class="af-item"><div class="af-icon" style="background:rgba(34,211,160,.15)">✅</div><div class="af-content"><div class="af-msg"><strong>Tremblay, Jean</strong> a clôturé l'OT WO-2014 (CH-03 Toyota)</div><div class="af-user">Dépôt Est</div><div class="af-time">Il y a 2h</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════ NOTIFICATIONS PANEL ═══════════ -->
+<div class="notif-panel" id="notif-panel">
+  <div class="np-header">
+    <span>🔔 Notifications</span>
+    <div style="display:flex;gap:6px">
+      <button class="btn xs outline" onclick="markAllRead()">Tout lire</button>
+      <button class="btn xs ghost" onclick="toggleNotifications()">✕</button>
+    </div>
+  </div>
+  <div class="np-body">
+    <div class="notif-item unread"><div class="ni-title">⚠ TK-01 — Vidange Dépassée (1,180 km)</div><div class="ni-sub">Dépôt Nord · Camion Volvo FH 16</div><div class="ni-time">Il y a 2 min</div></div>
+    <div class="notif-item unread"><div class="ni-title">⛽ Citerne Diesel Nord — Niveau Bas (28%)</div><div class="ni-sub">Environ 3 jours d'autonomie</div><div class="ni-time">Il y a 15 min</div></div>
+    <div class="notif-item unread"><div class="ni-title">📦 Rupture — Joint Hydraulique #88</div><div class="ni-sub">Entrepôt Nord · BC recommandé</div><div class="ni-time">Il y a 1h</div></div>
+    <div class="notif-item unread"><div class="ni-title">🔧 290 Mig Welder — PM Dépassé</div><div class="ni-sub">Dépôt Sud · 19 hrs de retard</div><div class="ni-time">Il y a 2h</div></div>
+    <div class="notif-item unread"><div class="ni-title">👤 Renouvellement Expiré — Daniels, Roger</div><div class="ni-sub">Certification expirée depuis le 05/07</div><div class="ni-time">Il y a 6h</div></div>
+    <div class="notif-item"><div class="ni-title">✅ OT WO-2014 clôturé — CH-03 Toyota</div><div class="ni-sub">Technicien: Tremblay, Jean · 2 040 150 GNF</div><div class="ni-time">Il y a 2h</div></div>
+    <div class="notif-item"><div class="ni-title">📄 BC PO-123 reçu partiellement</div><div class="ni-sub">Volvo Parts Canada · 1/2 lignes reçues</div><div class="ni-time">Hier</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ SETTINGS PANEL ═══════════ -->
+<div class="settings-panel" id="settings-panel">
+  <div class="sp-header">🎨 Préférences Interface<button class="btn xs ghost" onclick="closeSettings()">✕</button></div>
+  <div class="sp-body">
+    <div class="sp-section">
+      <div class="sp-section-title">Thème</div>
+      <div class="sp-row"><span class="sp-label">Couleur d'Accentuation</span>
+        <div class="color-opts">
+          <div class="color-option selected" style="background:#3b82f6" onclick="setAccent('#3b82f6','#2563eb',this)" title="Bleu"></div>
+          <div class="color-option" style="background:#22d3a0" onclick="setAccent('#22d3a0','#16a97e',this)" title="Teal"></div>
+          <div class="color-option" style="background:#a78bfa" onclick="setAccent('#a78bfa','#7c3aed',this)" title="Violet"></div>
+          <div class="color-option" style="background:#f59e0b" onclick="setAccent('#f59e0b','#d97706',this)" title="Ambre"></div>
+          <div class="color-option" style="background:#f43f5e" onclick="setAccent('#f43f5e','#be123c',this)" title="Rose"></div>
+        </div>
+      </div>
+      <div class="sp-row"><span class="sp-label">Mode Compact</span><div class="toggle" id="tog-compact" onclick="toggleTog(this,'compact')"><div class="toggle-knob"></div></div></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Sidebar</div>
+      <div class="sp-row"><span class="sp-label">Logo dans Sidebar</span><div class="toggle on" id="tog-logo" onclick="toggleTog(this,'logo')"><div class="toggle-knob"></div></div></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Notifications</div>
+      <div class="sp-row"><span class="sp-label">Alertes PM Dues</span><div class="toggle on" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+      <div class="sp-row"><span class="sp-label">Alertes Stock Bas</span><div class="toggle on" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+      <div class="sp-row"><span class="sp-label">Alertes Carburant</span><div class="toggle on" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+      <div class="sp-row"><span class="sp-label">Activité Autres Utilisateurs</span><div class="toggle" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Tableau de Bord</div>
+      <div class="sp-row"><span class="sp-label">Graphiques</span><div class="toggle on" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+      <div class="sp-row"><span class="sp-label">Feed d'Activité</span><div class="toggle on" onclick="toggleTog(this)"><div class="toggle-knob"></div></div></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Langue & Région</div>
+      <div class="fg"><label>Langue</label><select><option>Français</option><option>English</option><option>Español</option></select></div>
+      <div class="fg"><label>Format Date</label><select><option>JJ/MM/AAAA</option><option>AAAA-MM-JJ</option><option>MM/JJ/AAAA</option></select></div>
+      <div class="fg"><label>Devise</label><select><option selected>GNF (FG)</option><option>USD (US$)</option><option>EUR (€)</option><option>CAD (CA$)</option></select></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Equipment -->
+<div class="overlay" id="m-eq">
+<div class="modal wide draggable" id="m-eq-win">
+  <div class="modal-drag-bar" id="drag-m-eq-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">⚙ Nouvel Équipement</span>
+    <div class="mc" onclick="closeModal('m-eq')">✕</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="swTab(this,'t-eq-main')">Principal</div>
+    <div class="tab" onclick="swTab(this,'t-eq-spec')">Spécifications</div>
+    <div class="tab" onclick="swTab(this,'t-eq-pm')">PM Schedule</div>
+    <div class="tab" onclick="swTab(this,'t-eq-docs')">Documents</div>
+    <div class="tab" onclick="swTab(this,'t-eq-notes')">Notes</div>
+  </div>
+  <div id="t-eq-main" class="tc active">
+    <div class="form-row">
+      <div class="fg"><label>N° Unité *</label><input type="text" placeholder="ex: TK-05"></div>
+      <div class="fg"><label>Dépôt *</label><select><option>Dépôt Nord — Montréal</option><option>Dépôt Sud — Québec</option><option>Dépôt Est — Sherbrooke</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Type d'Équipement</label><select><option>Camion</option><option>Chariot Élévateur</option><option>Compresseur</option><option>Génératrice</option><option>Soudeuse</option><option>Véhicule Léger</option><option>Remorque</option><option>Autre</option></select></div>
+      <div class="fg"><label>Statut</label><select><option>Actif</option><option>Inactif</option><option>En Réparation</option><option>Vendu</option></select></div>
+    </div>
+    <div class="form-row cols3">
+      <div class="fg"><label>Marque</label><input type="text" placeholder="ex: Volvo"></div>
+      <div class="fg"><label>Modèle</label><input type="text" placeholder="ex: FH 16"></div>
+      <div class="fg"><label>Année</label><input type="number" placeholder="2024"></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>N° Série</label><input type="text"></div>
+      <div class="fg"><label>N° VIN / Plaque</label><input type="text"></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Date d'Acquisition</label><input type="date"></div>
+      <div class="fg"><label>Valeur d'Achat ($)</label><input type="number" step="0.01"></div>
+    </div>
+  </div>
+  <div id="t-eq-spec" class="tc">
+    <div class="form-row">
+      <div class="fg"><label>Compteur Primaire</label><select><option>Kilomètres</option><option>Heures</option><option>Miles</option><option>Cycles</option></select></div>
+      <div class="fg"><label>Valeur Actuelle</label><input type="number" value="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Compteur Secondaire</label><select><option>Aucun</option><option>Heures Moteur</option><option>Carburant (L)</option></select></div>
+      <div class="fg"><label>Valeur Secondaire</label><input type="number" value="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Type Carburant</label><select><option>Diesel</option><option>Essence</option><option>DEF/AdBlue</option><option>Électrique</option><option>Hybride</option></select></div>
+      <div class="fg"><label>Capacité Réservoir (L)</label><input type="number"></div>
+    </div>
+  </div>
+  <div id="t-eq-pm" class="tc">
+    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--r);padding:10px;margin-bottom:12px;font-size:12px;color:var(--yellow)">
+      💡 Sélectionnez un modèle PM pour pré-configurer automatiquement les services de maintenance.
+    </div>
+    <div class="fg"><label>Modèle PM</label><select><option>Aucun</option><option>Camions Lourds — Standard</option><option>Chariots Élévateurs</option><option>Compresseurs d'Air</option><option>Génératrices</option><option>Soudeuses</option></select></div>
+  </div>
+  <div id="t-eq-docs" class="tc">
+    <div class="fg"><label>Assurance</label><input type="text" placeholder="N° Police assurance"></div>
+    <div class="form-row">
+      <div class="fg"><label>Expiration Assurance</label><input type="date"></div>
+      <div class="fg"><label>Expiration Inspection</label><input type="date"></div>
+    </div>
+    <div class="fg"><label>Photo / Documents</label><input type="file" accept="image/*,.pdf" multiple></div>
+  </div>
+  <div id="t-eq-notes" class="tc">
+    <div class="fg"><label>Notes Internes</label><textarea style="min-height:120px" placeholder="Notes, observations..."></textarea></div>
+  </div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-eq')">Annuler</button>
+    <button class="btn blue" onclick="save('Équipement créé avec succès','m-eq')">✓ Sauvegarder</button>
+    <button class="btn green" onclick="save('Équipement créé, formulaire réinitialisé','m-eq')">+ Sauvegarder & Ajouter</button>
+  </div>
+</div>
+</div>
+
+<!-- Work Order -->
+<div class="overlay" id="m-wo">
+<div class="modal xl draggable" id="m-wo-win">
+  <div class="modal-drag-bar" id="drag-m-wo-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">📋 Nouvel Ordre de Travail</span>
+    <div class="mc" onclick="closeModal('m-wo')">✕</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:12px;color:var(--text3)">OT # <b style="color:var(--text);font-family:var(--mono)">WO-2019</b></div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap">
+      <div class="btn sm outline wo-status active" onclick="setWS(this,'Ouvert')">Ouvert</div>
+      <div class="btn sm outline wo-status" onclick="setWS(this,'En Cours')">En Cours</div>
+      <div class="btn sm outline wo-status" onclick="setWS(this,'En Attente')">En Attente</div>
+      <div class="btn sm outline wo-status" onclick="setWS(this,'Terminé')">Terminé</div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Équipement *</label><select><option>TK-01 – Volvo FH 16 (Nord)</option><option>290 – Mig Welder (Sud)</option><option>224 – Manning HIQ-1250 (Nord)</option><option>CH-03 – Toyota Chariot (Sud)</option><option>GEN-01 – Caterpillar XQ230 (Est)</option></select></div>
+    <div class="fg"><label>Compteur Actuel</label><input type="number" value="42180" placeholder="km/hrs"></div>
+  </div>
+  <div class="form-row cols3">
+    <div class="fg"><label>Date Planifiée</label><input type="date"></div>
+    <div class="fg"><label>Date Due</label><input type="date"></div>
+    <div class="fg"><label>Priorité</label><select><option>Normale</option><option>Haute</option><option>Urgente</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Assigné À</label><select><option>— Non assigné —</option><option>Boyce, Robert (Nord)</option><option>Daniels, Roger (Sud)</option><option>Tremblay, Jean (Est)</option></select></div>
+    <div class="fg"><label>Dépôt Exécution</label><select><option>Dépôt Nord — Montréal</option><option>Dépôt Sud — Québec</option><option>Dépôt Est — Sherbrooke</option></select></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="swTab(this,'t-wo-tasks')">Tâches PM</div>
+    <div class="tab" onclick="swTab(this,'t-wo-parts')">Pièces</div>
+    <div class="tab" onclick="swTab(this,'t-wo-labor')">Main d'Œuvre</div>
+    <div class="tab" onclick="swTab(this,'t-wo-notes')">Notes</div>
+  </div>
+  <div id="t-wo-tasks" class="tc active">
+    <table style="margin-bottom:8px"><thead><tr><th>Tâche</th><th>Type</th><th>Priorité</th><th>Pièces</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Vidange huile moteur</td><td><span class="badge b-teal"><span class="bdot"></span>PM</span></td><td>Haute</td><td>OIL-5W30, FLT-OIL-V</td><td><span class="badge b-yellow"><span class="bdot"></span>En attente</span></td><td><button class="ib danger">✕</button></td></tr>
+      <tr><td>Vérifier pression pneus</td><td><span class="badge b-teal"><span class="bdot"></span>PM</span></td><td>Normale</td><td>—</td><td><span class="badge b-yellow"><span class="bdot"></span>En attente</span></td><td><button class="ib danger">✕</button></td></tr>
+    </tbody></table>
+    <button class="btn sm outline">+ Ajouter Tâche</button>
+  </div>
+  <div id="t-wo-parts" class="tc">
+    <table style="margin-bottom:8px"><thead><tr><th>Réf.</th><th>Description</th><th>Entrepôt</th><th>Qté</th><th>Coût Unit.</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+      <tr>
+        <td><select><option>OIL-5W30</option><option>FLT-OIL-V</option><option>HYD-SEAL-88</option></select></td>
+        <td>Huile Moteur 5W-30</td>
+        <td><select><option>Nord</option><option>Sud</option><option>Est</option></select></td>
+        <td><input type="number" value="2" style="width:55px"></td>
+        <td>113 013 GNF</td>
+        <td>226 026 GNF</td>
+        <td><button class="ib danger">✕</button></td>
+      </tr>
+    </tbody></table>
+    <button class="btn sm outline">+ Ajouter Pièce</button>
+    <div style="text-align:right;margin-top:8px;font-size:13px">Sous-total pièces: <b style="color:var(--text)">226 026 GNF</b></div>
+  </div>
+  <div id="t-wo-labor" class="tc">
+    <table style="margin-bottom:8px"><thead><tr><th>Technicien</th><th>Date</th><th>Heures</th><th>Taux/h</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Boyce, Robert</td><td><input type="date" style="width:130px"></td><td><input type="number" value="2" style="width:60px"></td><td>365 400 GNF</td><td>730 800 GNF</td><td><button class="ib danger">✕</button></td></tr>
+    </tbody></table>
+    <button class="btn sm outline">+ Ajouter Main d'Œuvre</button>
+    <div style="text-align:right;margin-top:8px;font-size:13px">Total main d'œuvre: <b style="color:var(--text)">730 800 GNF</b></div>
+  </div>
+  <div id="t-wo-notes" class="tc">
+    <div class="fg"><label>Notes Technicien</label><textarea style="min-height:100px" placeholder="Observations, instructions spéciales..."></textarea></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border);margin-top:8px">
+    <div style="font-size:13px;color:var(--text2)">Total OT: <b style="color:var(--text);font-size:15px">109.98 GNF</b></div>
+    <div class="mf" style="margin:0;padding:0;border:none">
+      <button class="btn outline" onclick="closeModal('m-wo')">Annuler</button>
+      <button class="btn outline">🖨 Imprimer</button>
+      <button class="btn blue" onclick="save('Ordre de Travail WO-2019 créé','m-wo')">✓ Sauvegarder</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Fuel Transaction -->
+<div class="overlay" id="m-fuel-tx">
+<div class="modal draggable" id="m-fuel-tx-win">
+  <div class="modal-drag-bar" id="drag-m-fuel-tx-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">⛽ Nouvelle Transaction Carburant</span>
+    <div class="mc" onclick="closeModal('m-fuel-tx')">✕</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Véhicule / Équipement *</label><select><option>TK-01 – Volvo FH 16</option><option>TK-02 – Actros</option><option>CH-03 – Toyota Chariot</option><option>GEN-01 – Caterpillar</option></select></div>
+    <div class="fg"><label>Citerne Source *</label><select><option>Nord – Diesel (280L disp.)</option><option>Sud – Diesel (650L disp.)</option><option>Est – Essence (410L disp.)</option><option>Plein Externe</option></select></div>
+  </div>
+  <div class="form-row cols3">
+    <div class="fg"><label>Date</label><input type="date"></div>
+    <div class="fg"><label>Quantité (L) *</label><input type="number" step="0.1" placeholder="ex: 80"></div>
+    <div class="fg"><label>Prix/L ($)</label><input type="number" step="0.001" value="1.52"></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Compteur au Plein</label><input type="number" placeholder="km ou hrs"></div>
+    <div class="fg"><label>Employé</label><select><option>Boyce, Robert</option><option>Daniels, Roger</option><option>Martin, Sophie</option><option>Tremblay, Jean</option></select></div>
+  </div>
+  <div class="fg"><label>Total Calculé</label><input type="text" value="1 057 920 GNF" readonly style="background:var(--bg4);cursor:not-allowed"></div>
+  <div class="fg"><label>Notes / N° Carte Carburant</label><input type="text" placeholder="Référence, notes..."></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-fuel-tx')">Annuler</button>
+    <button class="btn blue" onclick="save('Transaction carburant enregistrée (80L – 1 057 920 GNF)','m-fuel-tx')">✓ Enregistrer</button>
+    <button class="btn green" onclick="save('Transaction enregistrée, formulaire réinitialisé','m-fuel-tx')">+ & Nouveau</button>
+  </div>
+</div>
+</div>
+
+<!-- Fuel Fill (citerne remplissage) -->
+<div class="overlay" id="m-fuel-fill">
+<div class="modal" id="m-fuel-fill-win">
+  <div class="mh"><div class="mt">🛢 Remplissage Citerne</div><div class="mc" onclick="closeModal('m-fuel-fill')">✕</div></div>
+  <div class="fg"><label>Citerne *</label><select><option>Nord – Diesel (280L actuels / 1,000L cap.)</option><option>Sud – Diesel (650L / 1,000L)</option><option>Est – Essence (410L / 500L)</option><option>Nord – DEF (91L / 100L)</option></select></div>
+  <div class="form-row">
+    <div class="fg"><label>Date Livraison</label><input type="date"></div>
+    <div class="fg"><label>Quantité Livrée (L) *</label><input type="number" step="1" placeholder="ex: 600"></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Prix Total ($)</label><input type="number" step="0.01" placeholder="ex: 912.00"></div>
+    <div class="fg"><label>Fournisseur Carburant</label><select><option>Petro-Canada</option><option>Esso</option><option>Shell</option><option>Ultramar</option></select></div>
+  </div>
+  <div class="fg"><label>N° Facture / Bon Livraison</label><input type="text"></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-fuel-fill')">Annuler</button>
+    <button class="btn blue" onclick="save('Remplissage citerne enregistré','m-fuel-fill')">✓ Enregistrer</button>
+  </div>
+</div>
+</div>
+
+<!-- Repair Request -->
+<div class="overlay" id="m-rep">
+<div class="modal draggable" id="m-rep-win">
+  <div class="modal-drag-bar" id="drag-m-rep-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">🔧 Demande de Réparation</span>
+    <div class="mc" onclick="closeModal('m-rep')">✕</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Équipement *</label><select><option>TK-01 – Volvo FH 16 (Nord)</option><option>290 – Mig Welder (Sud)</option><option>CH-03 – Toyota Chariot (Sud)</option></select></div>
+    <div class="fg"><label>Demandé Par</label><select><option>Boyce, Robert</option><option>Daniels, Roger</option><option>Martin, Sophie</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Date Due</label><input type="date"></div>
+    <div class="fg"><label>Priorité</label><select><option>Normale</option><option>Haute</option><option>Urgente — Arrêt Production</option></select></div>
+  </div>
+  <div class="fg"><label>Description de la Réparation *</label><textarea placeholder="Décrivez le problème, les symptômes observés..."></textarea></div>
+  <div class="fg"><label>Type de Défaillance</label><select><option>Mécanique</option><option>Électrique</option><option>Hydraulique</option><option>Structure</option><option>Carrosserie</option><option>Autre</option></select></div>
+  <div class="fg"><label>Pièces Suspectées Nécessaires</label><input type="text" placeholder="ex: Joint hydraulique, filtre à huile..."></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-rep')">Annuler</button>
+    <button class="btn blue" onclick="save('Demande de réparation créée et envoyée au responsable','m-rep')">✓ Soumettre</button>
+  </div>
+</div>
+</div>
+
+<!-- Inspection -->
+<div class="overlay" id="m-insp">
+<div class="modal wide draggable" id="m-insp-win">
+  <div class="modal-drag-bar" id="drag-m-insp-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">🔍 Nouvelle Inspection DOT</span>
+    <div class="mc" onclick="closeModal('m-insp')">✕</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Véhicule *</label><select><option>TK-01 – Volvo FH 16</option><option>TK-02 – Mercedes Actros</option><option>CH-03 – Toyota Chariot</option></select></div>
+    <div class="fg"><label>Type Inspection</label><select><option>DOT Quotidienne</option><option>Inspection Sécurité</option><option>Inspection Mensuelle</option><option>Inspection Pré-voyage</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Inspecteur</label><select><option>Boyce, Robert</option><option>Daniels, Roger</option><option>Martin, Sophie</option></select></div>
+    <div class="fg"><label>Date & Heure</label><input type="datetime-local"></div>
+  </div>
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">LISTE DE VÉRIFICATION</div>
+  <table style="margin-bottom:10px">
+    <thead><tr><th>Élément</th><th>OK</th><th>Défaut Mineur</th><th>Défaut Majeur</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Freins / Système de freinage</td><td><input type="radio" name="r1" value="ok" checked></td><td><input type="radio" name="r1" value="minor"></td><td><input type="radio" name="r1" value="major"></td><td><input type="text" placeholder="..." style="width:100%"></td></tr>
+      <tr><td>Éclairages & signalisation</td><td><input type="radio" name="r2" value="ok" checked></td><td><input type="radio" name="r2" value="minor"></td><td><input type="radio" name="r2" value="major"></td><td><input type="text" placeholder="..."></td></tr>
+      <tr><td>Pneumatiques & roues</td><td><input type="radio" name="r3" value="ok" checked></td><td><input type="radio" name="r3" value="minor"></td><td><input type="radio" name="r3" value="major"></td><td><input type="text" placeholder="..."></td></tr>
+      <tr><td>Direction</td><td><input type="radio" name="r4" value="ok" checked></td><td><input type="radio" name="r4" value="minor"></td><td><input type="radio" name="r4" value="major"></td><td><input type="text" placeholder="..."></td></tr>
+      <tr><td>Niveaux (huile, liquide refr., LV)</td><td><input type="radio" name="r5" value="ok" checked></td><td><input type="radio" name="r5" value="minor"></td><td><input type="radio" name="r5" value="major"></td><td><input type="text" placeholder="..."></td></tr>
+      <tr><td>Attelage & connexions</td><td><input type="radio" name="r6" value="ok" checked></td><td><input type="radio" name="r6" value="minor"></td><td><input type="radio" name="r6" value="major"></td><td><input type="text" placeholder="..."></td></tr>
+    </tbody>
+  </table>
+  <div class="form-row">
+    <div class="fg"><label>Condition Générale</label><select><option>Bonne</option><option>Acceptable</option><option>Mauvaise — Réparation Requise</option><option>Hors Service</option></select></div>
+    <div class="fg"><label>Kilométrage / Heures</label><input type="number" placeholder="Valeur actuelle compteur"></div>
+  </div>
+  <div class="fg"><label>Remarques Générales</label><textarea placeholder="Observations supplémentaires..."></textarea></div>
+  <div class="fg"><label>Signature Inspecteur</label><div style="border:1px solid var(--border);border-radius:var(--r);padding:20px;background:var(--bg3);text-align:center;color:var(--text3);font-size:12px">[ Zone de signature — Appui ou cliquer pour signer ]</div></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-insp')">Annuler</button>
+    <button class="btn outline">🖨 Imprimer</button>
+    <button class="btn blue" onclick="save('Inspection DOT enregistrée','m-insp')">✓ Soumettre Inspection</button>
+  </div>
+</div>
+</div>
+
+<!-- Part -->
+<div class="overlay" id="m-part">
+<div class="modal draggable" id="m-part-win">
+  <div class="modal-drag-bar" id="drag-m-part-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">🔩 Nouvelle Pièce d'Inventaire</span>
+    <div class="mc" onclick="closeModal('m-part')">✕</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Réf. Pièce *</label><input type="text" placeholder="ex: HYD-SEAL-88"></div>
+    <div class="fg"><label>Description *</label><input type="text" placeholder="Nom complet de la pièce"></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Catégorie</label><select><option>Filtres</option><option>Lubrifiants</option><option>Courroies</option><option>Hydraulique</option><option>Électrique</option><option>Pneumatiques</option><option>Carrosserie</option><option>Autre</option></select></div>
+    <div class="fg"><label>Entrepôt *</label><select><option>Entrepôt Nord — Montréal</option><option>Entrepôt Sud — Québec</option><option>Entrepôt Est — Sherbrooke</option></select></div>
+  </div>
+  <div class="form-row cols3">
+    <div class="fg"><label>Quantité</label><input type="number" value="0"></div>
+    <div class="fg"><label>Point Réappro</label><input type="number" value="0"></div>
+    <div class="fg"><label>Coût Unit. ($)</label><input type="number" step="0.01" value="0.00"></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Fournisseur Principal</label><select><option>— Aucun —</option><option>McMaster-Carr</option><option>Grainger Industrial</option><option>Volvo Parts Canada</option></select></div>
+    <div class="fg"><label>Réf. Fournisseur</label><input type="text" placeholder="N/P fournisseur"></div>
+  </div>
+  <div class="fg"><label>Équipements Compatibles</label><input type="text" placeholder="ex: TK-01, TK-02, CH-03..."></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-part')">Annuler</button>
+    <button class="btn blue" onclick="save('Pièce ajoutée à l\'inventaire','m-part')">✓ Sauvegarder</button>
+    <button class="btn green" onclick="save('Pièce ajoutée, formulaire réinitialisé','m-part')">+ & Nouveau</button>
+  </div>
+</div>
+</div>
+
+<!-- PO -->
+<div class="overlay" id="m-po">
+<div class="modal wide draggable" id="m-po-win">
+  <div class="modal-drag-bar" id="drag-m-po-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">📄 Nouveau Bon de Commande</span>
+    <div class="mc" onclick="closeModal('m-po')">✕</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Fournisseur *</label><select><option>McMaster-Carr</option><option>Grainger Industrial</option><option>Atelier Diesel Nord</option><option>Volvo Parts Canada</option></select></div>
+    <div class="fg"><label>Dépôt de Livraison *</label><select><option>Dépôt Nord — Montréal</option><option>Dépôt Sud — Québec</option><option>Dépôt Est — Sherbrooke</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Date Commande</label><input type="date"></div>
+    <div class="fg"><label>Date Livraison Prévue</label><input type="date"></div>
+  </div>
+  <table style="margin-bottom:8px">
+    <thead><tr><th>Réf. Pièce</th><th>Description</th><th>Entrepôt</th><th>Qté</th><th>Prix Unit.</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+      <tr>
+        <td><select><option>HYD-SEAL-88</option><option>PR19026445</option><option>OIL-5W30</option></select></td>
+        <td>Joint Hydraulique #88</td>
+        <td><select><option>Nord</option><option>Sud</option><option>Est</option></select></td>
+        <td><input type="number" value="5" style="width:55px"></td>
+        <td><input type="number" value="15.20" step="0.01" style="width:75px"></td>
+        <td>661 200 GNF</td>
+        <td><button class="ib danger">✕</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn sm outline">+ Ajouter Ligne</button>
+  <div style="text-align:right;margin-top:12px;font-size:13px">
+    <div style="color:var(--text3)">Sous-Total: 661 200 GNF</div>
+    <div style="color:var(--text3)">Taxes (TPS/TVQ): 13.30 GNF</div>
+    <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:4px">TOTAL: 89.30 GNF</div>
+  </div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-po')">Annuler</button>
+    <button class="btn outline">🖨 Imprimer BC</button>
+    <button class="btn outline">📧 Envoyer au Fournisseur</button>
+    <button class="btn blue" onclick="save('Bon de Commande PO-124 créé','m-po')">✓ Créer BC</button>
+  </div>
+</div>
+</div>
+
+<!-- Meter Update -->
+<div class="overlay" id="m-meters">
+<div class="modal wide draggable" id="m-meters-win">
+  <div class="modal-drag-bar" id="drag-m-meters-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">📊 Mise à Jour des Compteurs</span>
+    <div class="mc" onclick="closeModal('m-meters')">✕</div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+    <div class="srch"><span style="color:var(--text3)">🔍</span><input type="text" placeholder="Rechercher unité..."></div>
+    <select class="fsel"><option>Tous Dépôts</option><option>Nord</option><option>Sud</option><option>Est</option></select>
+    <button class="btn sm outline" style="margin-left:auto">📤 Importer GPS CSV</button>
+  </div>
+  <table>
+    <thead><tr><th>N° Unité</th><th>Description</th><th>Dépôt</th><th>Compteur</th><th>Valeur Précédente</th><th>Nouvelle Valeur</th><th>Dernière Màj</th></tr></thead>
+    <tbody>
+      <tr><td class="uid">TK-01</td><td>Volvo FH 16</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>km</td><td>41,500</td><td><input type="number" value="42180" style="width:100px"></td><td>10/07/2024</td></tr>
+      <tr><td class="uid">TK-02</td><td>Mercedes Actros</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>km</td><td>38,200</td><td><input type="number" value="38560" style="width:100px"></td><td>10/07/2024</td></tr>
+      <tr><td class="uid">CH-03</td><td>Toyota Chariot</td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>hrs</td><td>1,850</td><td><input type="number" value="1890" style="width:100px"></td><td>09/07/2024</td></tr>
+      <tr><td class="uid">224</td><td>Manning HIQ-1250</td><td><span class="badge b-blue"><span class="bdot"></span>Nord</span></td><td>hrs</td><td>158</td><td><input type="number" value="162" style="width:100px"></td><td>08/07/2024</td></tr>
+      <tr><td class="uid">290</td><td>Mig Welder Davidson</td><td><span class="badge b-teal"><span class="bdot"></span>Sud</span></td><td>hrs</td><td>175</td><td><input type="number" value="179" style="width:100px"></td><td>08/07/2024</td></tr>
+      <tr><td class="uid">GEN-01</td><td>Caterpillar XQ230</td><td><span class="badge b-purple"><span class="bdot"></span>Est</span></td><td>hrs</td><td>3,390</td><td><input type="number" value="3402" style="width:100px"></td><td>07/07/2024</td></tr>
+    </tbody>
+  </table>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-meters')">Annuler</button>
+    <button class="btn blue" onclick="save('Compteurs mis à jour pour 6 équipements','m-meters')">✓ Sauvegarder Tous</button>
+  </div>
+</div>
+</div>
+
+<!-- User Modal -->
+<div class="overlay" id="m-user">
+<div class="modal" id="m-user-win">
+  <div class="mh"><div class="mt">👤 Nouvel Utilisateur</div><div class="mc" onclick="closeModal('m-user')">✕</div></div>
+  <div class="form-row"><div class="fg"><label>Prénom *</label><input type="text"></div><div class="fg"><label>Nom *</label><input type="text"></div></div>
+  <div class="fg"><label>Email (identifiant) *</label><input type="email" placeholder="prenom.nom@entreprise.com"></div>
+  <div class="form-row">
+    <div class="fg"><label>Rôle *</label><select><option>Technicien</option><option>Mécanicien</option><option>Responsable</option><option>Administrateur</option><option>Lecteur</option></select></div>
+    <div class="fg"><label>Dépôt(s) Accessibles</label><select><option>Tous les Dépôts</option><option>Dépôt Nord seulement</option><option>Dépôt Sud seulement</option><option>Dépôt Est seulement</option></select></div>
+  </div>
+  <div class="fg"><label>Mot de Passe Provisoire</label><input type="password" placeholder="Sera demandé de changer à la connexion"></div>
+  <div class="form-row">
+    <div class="fg"><label>Taux Horaire ($)</label><input type="number" step="0.01"></div>
+    <div class="fg"><label>Poste / Titre</label><input type="text"></div>
+  </div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-user')">Annuler</button>
+    <button class="btn blue" onclick="save('Utilisateur créé — Email d\'activation envoyé','m-user')">✓ Créer Utilisateur</button>
+  </div>
+</div>
+</div>
+
+<!-- Employee -->
+<div class="overlay" id="m-employee">
+<div class="modal" id="m-emp-win">
+  <div class="mh"><div class="mt">👤 Nouvel Employé</div><div class="mc" onclick="closeModal('m-employee')">✕</div></div>
+  <div class="form-row"><div class="fg"><label>Prénom *</label><input type="text"></div><div class="fg"><label>Nom *</label><input type="text"></div></div>
+  <div class="form-row"><div class="fg"><label>ID Employé</label><input type="text"></div><div class="fg"><label>Dépôt Principal</label><select><option>Nord</option><option>Sud</option><option>Est</option></select></div></div>
+  <div class="form-row"><div class="fg"><label>Poste</label><input type="text"></div><div class="fg"><label>Taux Horaire ($)</label><input type="number" step="0.01"></div></div>
+  <div class="fg"><label>Certifications / Renouvellements</label>
+    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+      <input type="text" placeholder="Certification #1" style="flex:1">
+      <input type="date" style="width:140px">
+    </div>
+  </div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-employee')">Annuler</button>
+    <button class="btn blue" onclick="save('Employé enregistré','m-employee')">✓ Sauvegarder</button>
+  </div>
+</div>
+</div>
+
+<!-- Vendor -->
+<div class="overlay" id="m-vendor">
+<div class="modal" id="m-vendor-win">
+  <div class="mh"><div class="mt">🏢 Nouveau Fournisseur</div><div class="mc" onclick="closeModal('m-vendor')">✕</div></div>
+  <div class="form-row"><div class="fg"><label>Nom *</label><input type="text"></div><div class="fg"><label>N° Compte</label><input type="text"></div></div>
+  <div class="form-row"><div class="fg"><label>Téléphone</label><input type="text"></div><div class="fg"><label>Email</label><input type="email"></div></div>
+  <div class="form-row"><div class="fg"><label>Site Web</label><input type="url"></div><div class="fg"><label>Types Produits</label><select><option>Pièces Mécaniques</option><option>Outillage</option><option>Service Externe</option><option>Carburant</option><option>Pneumatiques</option></select></div></div>
+  <div class="fg"><label>Dépôts Desservis</label><select multiple style="height:70px"><option>Dépôt Nord</option><option>Dépôt Sud</option><option>Dépôt Est</option></select></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-vendor')">Annuler</button>
+    <button class="btn blue" onclick="save('Fournisseur enregistré','m-vendor')">✓ Sauvegarder</button>
+  </div>
+</div>
+</div>
+
+<!-- Depot -->
+<div class="overlay" id="m-depot">
+<div class="modal" id="m-depot-win">
+  <div class="mh"><div class="mt">🏭 Nouveau Dépôt</div><div class="mc" onclick="closeModal('m-depot')">✕</div></div>
+  <div class="form-row"><div class="fg"><label>Nom du Dépôt *</label><input type="text" placeholder="ex: Dépôt Ouest — Laval"></div><div class="fg"><label>Code Court</label><input type="text" placeholder="ex: OUEST" maxlength="8"></div></div>
+  <div class="fg"><label>Adresse</label><input type="text"></div>
+  <div class="form-row"><div class="fg"><label>Ville</label><input type="text"></div><div class="fg"><label>Code Postal</label><input type="text"></div></div>
+  <div class="form-row"><div class="fg"><label>Téléphone</label><input type="text"></div><div class="fg"><label>Responsable</label><select><option>Martin, Sophie</option><option>Boyce, Robert</option></select></div></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-depot')">Annuler</button>
+    <button class="btn blue" onclick="save('Dépôt créé avec succès','m-depot')">✓ Créer Dépôt</button>
+  </div>
+</div>
+</div>
+
+<!-- Detail (Profil Équipement) -->
+<div class="overlay" id="m-detail">
+<div class="modal xl draggable" id="m-detail-win">
+  <div class="modal-drag-bar" id="drag-m-detail-win">
+    <div class="drag-dots"><div class="drag-dot" style="background:var(--red)"></div><div class="drag-dot" style="background:var(--yellow)"></div><div class="drag-dot" style="background:var(--green)"></div></div>
+    <span style="flex:1;font-size:13px;font-weight:600">📊 Profil Équipement — TK-01 Volvo FH 16</span>
+    <div class="mc" onclick="closeModal('m-detail')">✕</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">PM EN RETARD</div><div style="font-size:22px;font-weight:700;color:var(--red)">1</div></div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">KM ACTUELS</div><div style="font-size:22px;font-weight:700">42,180</div></div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">COÛT TOTAL</div><div style="font-size:22px;font-weight:700;color:var(--yellow)">4,280 GNF</div></div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">DÉPÔT</div><div style="font-size:14px;font-weight:700;color:var(--blue)">Nord</div></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="swTab(this,'t-det-sum')">Résumé</div>
+    <div class="tab" onclick="swTab(this,'t-det-pm')">Tâches PM</div>
+    <div class="tab" onclick="swTab(this,'t-det-hist')">Historique</div>
+    <div class="tab" onclick="swTab(this,'t-det-fuel')">Carburant</div>
+    <div class="tab" onclick="swTab(this,'t-det-insp')">Inspections</div>
+    <div class="tab" onclick="swTab(this,'t-det-wo')">OT</div>
+  </div>
+  <div id="t-det-sum" class="tc active">
+    <div class="chart-grid" style="margin:0">
+      <div class="chart-card"><div class="cc-title">Coûts sur 6 Mois</div><div style="font-size:22px;font-weight:700">4,280 GNF</div><div style="color:var(--text3);font-size:11px">Moy. mensuelle: 713 GNF</div></div>
+      <div class="chart-card"><div class="cc-title">Consommation Carburant</div><div style="font-size:22px;font-weight:700;color:var(--teal)">8.1 L/100km</div><div style="color:var(--text3);font-size:11px">Flotte moy.: 8.4 L/100km</div></div>
+    </div>
+  </div>
+  <div id="t-det-pm" class="tc">
+    <table><thead><tr><th>Service</th><th>Fréquence</th><th>Dernier PM</th><th>Dernier Km</th><th>Prochain Km</th><th>Statut</th></tr></thead>
+    <tbody>
+      <tr><td>Vidange Huile Moteur</td><td>10,000 km</td><td>15/01/2024</td><td>31,000 km</td><td>41,000 km</td><td><span class="badge b-red"><span class="bdot"></span>Dépassé 1,180 km</span></td></tr>
+      <tr><td>Filtre à Huile</td><td>10,000 km</td><td>15/01/2024</td><td>31,000 km</td><td>41,000 km</td><td><span class="badge b-red"><span class="bdot"></span>Dépassé 1,180 km</span></td></tr>
+      <tr><td>Filtre à Air</td><td>20,000 km</td><td>10/08/2023</td><td>22,000 km</td><td>42,000 km</td><td><span class="badge b-yellow"><span class="bdot"></span>Bientôt (180 km)</span></td></tr>
+      <tr><td>Inspection Freins</td><td>20,000 km</td><td>10/08/2023</td><td>22,000 km</td><td>42,000 km</td><td><span class="badge b-yellow"><span class="bdot"></span>Bientôt (180 km)</span></td></tr>
+      <tr><td>Liquide de Refroidissement</td><td>60,000 km</td><td>01/06/2022</td><td>5,000 km</td><td>65,000 km</td><td><span class="badge b-green"><span class="bdot"></span>OK</span></td></tr>
+    </tbody></table>
+  </div>
+  <div id="t-det-hist" class="tc">
+    <table><thead><tr><th>Date</th><th>OT #</th><th>Km</th><th>Maintenance</th><th>Technicien</th><th>Pièces</th><th>MO</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr><td>15/01/2024</td><td>WO-1850</td><td>31,000</td><td>Vidange + Filtres</td><td>Boyce, R.</td><td>543 750 GNF</td><td>730 800 GNF</td><td>1 274 550 GNF</td></tr>
+      <tr><td>10/08/2023</td><td>WO-1720</td><td>22,000</td><td>Freins + Filtre Air + Vidange</td><td>Daniels, R.</td><td>1 078 800 GNF</td><td>1 461 600 GNF</td><td>2 540 400 GNF</td></tr>
+    </tbody></table>
+  </div>
+  <div id="t-det-fuel" class="tc">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">RENDEMENT MOY.</div><div style="font-size:18px;font-weight:700;color:var(--teal)">8.1 L/100km</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">LITRES CE MOIS</div><div style="font-size:18px;font-weight:700">240L</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--text3)">COÛT CE MOIS</div><div style="font-size:18px;font-weight:700;color:var(--yellow)">364.80 GNF</div></div>
+    </div>
+    <table><thead><tr><th>Date</th><th>Citerne</th><th>Litres</th><th>Km</th><th>Rendement</th><th>Coût</th></tr></thead>
+    <tbody>
+      <tr><td>11/07/2024</td><td>Nord – Diesel</td><td>80L</td><td>42,180</td><td>8.1 L/100</td><td>1 057 920 GNF</td></tr>
+      <tr><td>28/06/2024</td><td>Nord – Diesel</td><td>85L</td><td>41,280</td><td>8.0 L/100</td><td>1 124 040 GNF</td></tr>
+    </tbody></table>
+  </div>
+  <div id="t-det-insp" class="tc">
+    <table><thead><tr><th>Date</th><th>Type</th><th>Inspecteur</th><th>Condition</th><th>Défauts</th></tr></thead>
+    <tbody>
+      <tr><td>11/07/2024</td><td>DOT Quotidienne</td><td>Boyce, Robert</td><td><span class="badge b-green"><span class="bdot"></span>Bonne</span></td><td>0</td></tr>
+      <tr><td>08/07/2024</td><td>DOT Quotidienne</td><td>Boyce, Robert</td><td><span class="badge b-green"><span class="bdot"></span>Bonne</span></td><td>0</td></tr>
+    </tbody></table>
+  </div>
+  <div id="t-det-wo" class="tc">
+    <table><thead><tr><th>OT #</th><th>Date</th><th>Type</th><th>Statut</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr><td class="uid">WO-2015</td><td>2024-07-15</td><td>PM</td><td><span class="badge b-green"><span class="bdot"></span>Ouvert</span></td><td>2 479 500 GNF</td></tr>
+    </tbody></table>
+  </div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-detail')">Fermer</button>
+    <button class="btn blue" onclick="openModal('m-wo');closeModal('m-detail')">📋 Émettre OT</button>
+    <button class="btn outline">✏ Modifier Équipement</button>
+  </div>
+</div>
+</div>
+
+<!-- Expense -->
+<div class="overlay" id="m-expense">
+<div class="modal" id="m-expense-win">
+  <div class="mh"><div class="mt">💰 Enregistrer Dépense</div><div class="mc" onclick="closeModal('m-expense')">✕</div></div>
+  <div class="form-row">
+    <div class="fg"><label>Équipement</label><select><option>TK-01 – Volvo FH 16</option><option>290 – Mig Welder</option></select></div>
+    <div class="fg"><label>Dépôt</label><select><option>Nord</option><option>Sud</option><option>Est</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Type</label><select><option>Réparation</option><option>Carburant</option><option>Pièces</option><option>Main d'Œuvre</option><option>Autre</option></select></div>
+    <div class="fg"><label>Montant ($)</label><input type="number" step="0.01"></div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label>Date</label><input type="date"></div>
+    <div class="fg"><label>N° Facture / Référence</label><input type="text"></div>
+  </div>
+  <div class="fg"><label>Notes</label><textarea placeholder="Description..."></textarea></div>
+  <div class="mf">
+    <button class="btn outline" onclick="closeModal('m-expense')">Annuler</button>
+    <button class="btn blue" onclick="save('Dépense enregistrée','m-expense')">✓ Enregistrer</button>
+  </div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">✅ Sauvegardé</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div id="mobile-bottom-nav">
+  <div class="mbn-items">
+    <div class="mbn-item active" onclick="showPage('home');updateMBN(this)"><div class="mbn-icon">🏠</div>Accueil</div>
+    <div class="mbn-item" onclick="showPage('equipment');updateMBN(this)"><div class="mbn-icon">⚙</div>Équip.</div>
+    <div class="mbn-item" onclick="showPage('workorders');updateMBN(this)"><div class="mbn-icon">📋</div>OT</div>
+    <div class="mbn-item" onclick="showPage('fuel');updateMBN(this)"><div class="mbn-icon">⛽</div>Carburant</div>
+    <div class="mbn-item" onclick="toggleSidebar()"><div class="mbn-icon">☰</div>Menu</div>
+  </div>
+</div>
+
+<style>
+.acell{display:flex;gap:4px;align-items:center}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══ APP STATE ═══
+const APP = {
+  currentUser: { name: 'Admin Principal', role: 'admin', avatar: 'AP', color: '#7c3aed' },
+  currentPage: 'home',
+  sidebarCollapsed: false,
+  isMobile: () => window.innerWidth <= 768,
+};
+
+// ═══ LOGIN ═══
+function doLogin() {
+  const u = document.getElementById('li-user').value;
+  const p = document.getElementById('li-pass').value;
+  if (!u || !p) { alert('Veuillez saisir identifiant et mot de passe'); return; }
+  bootApp(u, 'admin');
+}
+function quickLogin(name, role, color) {
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  APP.currentUser = { name, role, color, avatar: initials };
+  bootApp(name, role);
+}
+function bootApp(name, role) {
+  document.getElementById('login-screen').style.display = 'none';
+  const appEl = document.getElementById('app');
+  appEl.style.display = 'flex';
+  // Show footer
+  document.getElementById('habatech-footer').style.display = 'block';
+  // Firebase status indicator
+  if (window.FB && window.FB.user) {
+    document.getElementById('fb-status-dot').style.background = '#22d3a0';
+    document.getElementById('fb-status-txt').textContent = 'Firebase : connecté';
+  }
+
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-display').textContent = name;
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-avatar').style.background = APP.currentUser.color || '#7c3aed';
+
+  const roleLabels = { admin:'Administrateur', manager:'Responsable', tech:'Technicien', viewer:'Lecteur' };
+  document.getElementById('user-role-disp').textContent = roleLabels[role] || 'Utilisateur';
+
+  const now = new Date();
+  const greeting = now.getHours() < 12 ? 'Bonjour' : now.getHours() < 17 ? 'Bon après-midi' : 'Bonsoir';
+  document.getElementById('home-welcome').textContent = `${greeting}, ${name.split(' ')[0]} — ${now.toLocaleDateString('fr-CA', {weekday:'long', day:'numeric', month:'long'})}`;
+
+  // Show logo text if sidebar not collapsed
+  if (!APP.sidebarCollapsed) document.querySelector('.logo-text').style.display = '';
+
+  // Apply responsive layout
+  handleResize();
+}
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('li-user').value = '';
+  document.getElementById('li-pass').value = '';
+  closeAllDD();
+}
+
+// ═══ NAVIGATION ═══
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) { page.classList.add('active'); APP.currentPage = id; }
+  document.querySelectorAll('.nav-item').forEach(n => {
+    const oc = n.getAttribute('onclick') || '';
+    if (oc.includes("'" + id + "'")) n.classList.add('active');
+  });
+  // Sync mobile bottom nav
+  const mbnItems = document.querySelectorAll('.mbn-item');
+  mbnItems.forEach(i => {
+    const oc = i.getAttribute('onclick') || '';
+    i.classList.toggle('active', oc.includes("'" + id + "'"));
+  });
+  if (APP.isMobile()) closeMobileNav();
+  closeAllDD();
+}
+
+// ═══ SIDEBAR ═══
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (APP.isMobile()) {
+    sb.classList.toggle('mobile-open');
+    document.getElementById('mobile-overlay').style.display = sb.classList.contains('mobile-open') ? 'block' : 'none';
+  } else {
+    APP.sidebarCollapsed = !APP.sidebarCollapsed;
+    sb.classList.toggle('collapsed', APP.sidebarCollapsed);
+    document.querySelector('.logo-text').style.display = APP.sidebarCollapsed ? 'none' : '';
+    document.querySelector('.collapse-btn').textContent = APP.sidebarCollapsed ? '▶' : '◀';
+  }
+}
+function closeMobileNav() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobile-overlay').style.display = 'none';
+}
+
+// ═══ DROPDOWNS ═══
+function toggleDD(id) {
+  const m = document.getElementById(id);
+  const wasOpen = m.classList.contains('open');
+  closeAllDD();
+  if (!wasOpen) { m.classList.add('open'); }
+}
+function closeAllDD() {
+  document.querySelectorAll('.dmenu').forEach(m => m.classList.remove('open'));
+}
+document.addEventListener('click', e => { if (!e.target.closest('.dropdown') && !e.target.closest('.user-chip')) closeAllDD(); });
+
+// ═══ MODALS ═══
+function openModal(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
+  overlay.classList.add('open');
+  closeAllDD();
+  // Position draggable modals
+  const win = overlay.querySelector('.modal.draggable');
+  if (win && !win.style.left) {
+    const ow = win.offsetWidth || 580;
+    const oh = win.offsetHeight || 400;
+    win.style.left = Math.max(20, (window.innerWidth - ow)/2) + 'px';
+    win.style.top = Math.max(60, (window.innerHeight - oh)/3) + 'px';
+  }
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.overlay.open').forEach(m => m.classList.remove('open'));
+  if ((e.ctrlKey || e.metaKey) && e.key === 'm') { e.preventDefault(); openModal('m-meters'); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); openModal('m-wo'); }
+});
+
+// ═══ MOBILE BOTTOM NAV ═══
+function updateMBN(el) {
+  document.querySelectorAll('.mbn-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// ═══ HANDLE RESIZE ═══
+function handleResize() {
+  const mobile = APP.isMobile();
+  const sb = document.getElementById('sidebar');
+  if (mobile) {
+    sb.classList.remove('collapsed');
+    APP.sidebarCollapsed = false;
+    document.getElementById('mobile-bottom-nav').style.display = 'block';
+  } else {
+    document.getElementById('mobile-bottom-nav').style.display = 'none';
+    document.getElementById('mobile-overlay').style.display = 'none';
+    sb.classList.remove('mobile-open');
+  }
+}
+window.addEventListener('resize', handleResize);
+
+// ═══ DRAGGABLE WINDOWS ═══
+(function initDrag() {
+  document.querySelectorAll('[id^="drag-"]').forEach(bar => {
+    const win = bar.closest('.modal');
+    if (!win) return;
+    let sx, sy, ex, ey, dragging = false;
+    // Mouse
+    bar.addEventListener('mousedown', e => {
+      if (window.innerWidth <= 768) return; // disable drag on mobile
+      dragging = true;
+      win.style.position = 'fixed';
+      ex = win.offsetLeft; ey = win.offsetTop;
+      sx = e.clientX; sy = e.clientY;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - sx; const dy = e.clientY - sy;
+      win.style.left = Math.max(0, Math.min(window.innerWidth - 200, ex + dx)) + 'px';
+      win.style.top = Math.max(0, Math.min(window.innerHeight - 100, ey + dy)) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+    // Touch
+    bar.addEventListener('touchstart', e => {
+      if (window.innerWidth <= 768) return;
+      dragging = true;
+      win.style.position = 'fixed';
+      ex = win.offsetLeft; ey = win.offsetTop;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, {passive:true});
+    document.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - sx; const dy = e.touches[0].clientY - sy;
+      win.style.left = Math.max(0, Math.min(window.innerWidth - 200, ex + dx)) + 'px';
+      win.style.top = Math.max(0, Math.min(window.innerHeight - 100, ey + dy)) + 'px';
+    }, {passive:true});
+    document.addEventListener('touchend', () => { dragging = false; });
+  });
+})();
+
+// ═══ TABS ═══
+function swTab(el, id) {
+  const container = el.closest('.modal') || el.closest('.page') || document.body;
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  container.querySelectorAll('.tc').forEach(p => p.classList.remove('active'));
+  const t = container.querySelector('#' + id);
+  if (t) t.classList.add('active');
+}
+
+// ═══ TOAST ═══
+let toastTimer;
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'err' ? '❌ ' : '✅ ') + msg;
+  t.style.borderLeftColor = type === 'err' ? 'var(--red)' : 'var(--green)';
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.style.display = 'none', 3500);
+}
+function save(msg, modalId) {
+  if (modalId) closeModal(modalId);
+  toast(msg);
+}
+
+// ═══ TABLE FILTER ═══
+function filterTbl(input, tableId) {
+  const val = input.value.toLowerCase();
+  const t = document.getElementById(tableId);
+  if (!t) return;
+  t.querySelectorAll('tbody tr').forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(val) ? '' : 'none';
+  });
+}
+
+// ═══ SELECT ALL ═══
+function selAll(cb, tblId) {
+  document.querySelectorAll('#' + tblId + ' tbody input[type=checkbox]').forEach(c => c.checked = cb.checked);
+}
+
+// ═══ NOTIFICATIONS ═══
+let notifOpen = false;
+function toggleNotifications() {
+  notifOpen = !notifOpen;
+  document.getElementById('notif-panel').classList.toggle('open', notifOpen);
+  if (document.getElementById('settings-panel').classList.contains('open')) closeSettings();
+}
+function markAllRead() {
+  document.querySelectorAll('.notif-item.unread').forEach(n => n.classList.remove('unread'));
+  document.getElementById('notif-count').textContent = '0';
+}
+
+// ═══ SETTINGS ═══
+function openSettings() {
+  document.getElementById('settings-panel').classList.add('open');
+  if (notifOpen) { notifOpen = false; document.getElementById('notif-panel').classList.remove('open'); }
+}
+function closeSettings() { document.getElementById('settings-panel').classList.remove('open'); }
+
+// ═══ TOGGLES ═══
+function toggleTog(el, key) {
+  el.classList.toggle('on');
+}
+
+// ═══ ACCENT COLOR ═══
+function setAccent(c1, c2, el) {
+  document.documentElement.style.setProperty('--blue', c1);
+  document.documentElement.style.setProperty('--blue2', c2);
+  document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  toast('Couleur d\'accentuation appliquée');
+}
+
+// ═══ WO STATUS ═══
+function setWS(el, label) {
+  el.closest('div').querySelectorAll('.wo-status').forEach(b => {
+    b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
+  });
+  el.style.background = 'var(--blue)'; el.style.color = '#fff'; el.style.borderColor = 'var(--blue)';
+}
+
+// ═══ REPORTS ═══
+function loadRep(el, name) {
+  document.querySelectorAll('.ri').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rep-title').textContent = name;
+  document.getElementById('rep-subtitle').textContent = 'Rapport: ' + name;
+}
+
+// ═══ GLOBAL SEARCH ═══
+const searchData = [
+  { type:'Équipement', id:'TK-01', label:'Volvo FH 16 — Dépôt Nord', page:'equipment' },
+  { type:'Équipement', id:'TK-02', label:'Mercedes Actros — Dépôt Nord', page:'equipment' },
+  { type:'Équipement', id:'CH-03', label:'Toyota 5FBE15 Chariot — Dépôt Sud', page:'equipment' },
+  { type:'Équipement', id:'224', label:'Manning HIQ-1250 Presse — Dépôt Nord', page:'equipment' },
+  { type:'Équipement', id:'GEN-01', label:'Caterpillar XQ230 — Dépôt Est', page:'equipment' },
+  { type:'OT', id:'WO-2015', label:'Vidange TK-01 Volvo', page:'workorders' },
+  { type:'OT', id:'WO-2016', label:'Réparation Mig Welder 290', page:'workorders' },
+  { type:'Pièce', id:'HYD-SEAL-88', label:'Joint Hydraulique #88 (Rupture)', page:'inventory' },
+  { type:'Pièce', id:'OIL-5W30', label:'Huile Moteur 5W-30 — Nord', page:'inventory' },
+  { type:'Dépôt', id:'Nord', label:'Dépôt Nord — Montréal', page:'depots' },
+  { type:'Dépôt', id:'Sud', label:'Dépôt Sud — Québec', page:'depots' },
+  { type:'Carburant', id:'Citerne Nord', label:'Citerne Diesel Nord (28%)', page:'fuel-tanks' },
+];
+function globalSearch(val) {
+  const box = document.getElementById('search-results');
+  if (!val || val.length < 2) { box.style.display = 'none'; return; }
+  const matches = searchData.filter(d =>
+    d.id.toLowerCase().includes(val.toLowerCase()) ||
+    d.label.toLowerCase().includes(val.toLowerCase())
+  ).slice(0, 8);
+  if (!matches.length) { box.style.display = 'none'; return; }
+  box.innerHTML = matches.map(m => `
+    <div onclick="showPage('${m.page}');document.getElementById('gsearch').value='';document.getElementById('search-results').style.display='none'"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px"
+      onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+      <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg4);color:var      <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg4);color:var(--text3)">${m.type}</span>
+      <span style="flex:1"><b style="color:var(--text)">${m.id}</b> — <span style="color:var(--text3)">${m.label}</span></span>
+    </div>
+  `).join('');
+  box.style.display = 'block';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#gsearch') && !e.target.closest('#search-results'))
+    document.getElementById('search-results').style.display = 'none';
+});
+</script>
+</div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════
+     FOOTER HABATECH
+══════════════════════════════════════════ -->
+<footer id="habatech-footer" style="
+  display:none;
+  background:#080e18;
+  border-top:1px solid #1e2d42;
+  padding:16px 20px 20px;
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;
+  color:#5a7099;
+  flex-shrink:0;
+">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+    <!-- Branding -->
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,#3b82f6,#2dd4bf);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">⚙</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#e8edf5;letter-spacing:-.3px">
+          Fleet Maintenance Pro
+          <span style="font-size:10px;font-weight:400;color:#5a7099;margin-left:6px">v2.0</span>
+        </div>
+        <div style="font-size:10px;color:#3a5070">
+          Propulsé par
+          <a href="https://habatech.gn" target="_blank" rel="noopener"
+             style="color:#3b82f6;text-decoration:none;font-weight:700;letter-spacing:.3px">HABATECH</a>
+          &nbsp;·&nbsp; Conakry, Guinée &nbsp;·&nbsp; Devise : <b style="color:#22d3a0">GNF</b>
+        </div>
+      </div>
+    </div>
+    <!-- Links -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      <a href="https://habatech.gn" target="_blank" rel="noopener"
+         style="color:#5a7099;text-decoration:none;transition:color .15s"
+         onmouseover="this.style.color='#94a8c4'" onmouseout="this.style.color='#5a7099'">habatech.gn</a>
+      <a href="mailto:contact@habatech.gn"
+         style="color:#5a7099;text-decoration:none;transition:color .15s"
+         onmouseover="this.style.color='#94a8c4'" onmouseout="this.style.color='#5a7099'">Contact</a>
+      <a href="https://habatech.gn/support" target="_blank" rel="noopener"
+         style="color:#5a7099;text-decoration:none;transition:color .15s"
+         onmouseover="this.style.color='#94a8c4'" onmouseout="this.style.color='#5a7099'">Support</a>
+      <span style="color:#253349">|</span>
+      <span>© 2024 HABATECH. Tous droits réservés.</span>
+    </div>
+    <!-- Firebase status -->
+    <div style="display:flex;align-items:center;gap:6px;font-size:10px">
+      <span id="fb-status-dot" style="width:7px;height:7px;border-radius:50%;background:#3a5070;display:inline-block"></span>
+      <span id="fb-status-txt">Firebase : non connecté</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

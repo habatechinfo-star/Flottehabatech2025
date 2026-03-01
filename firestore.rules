@@ -1,0 +1,74 @@
+// firestore.rules — Fleet Maintenance Pro | HABATECH
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Fonctions utilitaires ──
+    function isAuth() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isManager() {
+      return isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin','manager'];
+    }
+    function isTech() {
+      return isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin','manager','tech'];
+    }
+
+    // ── Utilisateurs ──
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow write: if isAdmin() || request.auth.uid == userId;
+    }
+
+    // ── Équipements ──
+    match /equipment/{docId} {
+      allow read: if isAuth();
+      allow create, update: if isTech();
+      allow delete: if isManager();
+    }
+
+    // ── Ordres de travail ──
+    match /workorders/{docId} {
+      allow read: if isAuth();
+      allow create, update: if isTech();
+      allow delete: if isManager();
+    }
+
+    // ── Inventaire pièces ──
+    match /inventory/{docId} {
+      allow read: if isAuth();
+      allow write: if isTech();
+    }
+
+    // ── Carburant ──
+    match /fuel/{docId} {
+      allow read: if isAuth();
+      allow write: if isTech();
+    }
+
+    // ── Dépôts ──
+    match /depots/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ── Achats / Bons de commande ──
+    match /purchasing/{docId} {
+      allow read: if isAuth();
+      allow write: if isManager();
+    }
+
+    // ── Activité / Logs ──
+    match /activity/{docId} {
+      allow read: if isManager();
+      allow create: if isAuth();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
